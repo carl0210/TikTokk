@@ -15,5 +15,4 @@ feed:
   len: 3
 
 fileSave:
-  file: "http://192.168.31.29:10010/publicSrc/"
-  uploads : "http://192.168.31.29:10010/uploads/"
+  path: "http://192.168.31.29:6666/PublicSrc/"

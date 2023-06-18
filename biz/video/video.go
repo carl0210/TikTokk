@@ -99,12 +99,9 @@ func (b *BVideo) PublishAction(ctx *gin.Context, file *multipart.FileHeader, tit
 	//获取、文件名
 	fileName := file.Filename
 	base := filepath.Base(fileName)
-	//用户名-上传时间戳-文件名
-	fileName = fmt.Sprintf("%s-%d-%s", username, time.Now().Unix(), base)
-	//创建路径
-	savePath := filepath.Join("./publicSrc/video/", fileName)
-	//上传
-	err := ctx.SaveUploadedFile(file, savePath)
+	//用户名-上传时间戳-文件名,创建路径
+	fileNameLatest := fmt.Sprintf("%s-%d-%s", username, time.Now().Unix(), base)
+	err := sentVideo(file, fileNameLatest)
 	if err != nil {
 		return err
 	}
@@ -116,7 +113,7 @@ func (b *BVideo) PublishAction(ctx *gin.Context, file *multipart.FileHeader, tit
 	}
 	//创建视频记录
 	v := model.Video{
-		PlayURL:  utils.FileSavePath + savePath,
+		PlayURL:  utils.FileSavePath + fileNameLatest,
 		Title:    title,
 		AuthorId: u.UserId,
 		CoverURL: "https://cdn.pixabay.com/photo/2016/03/27/18/10/bear-1283347_1280.jpg",

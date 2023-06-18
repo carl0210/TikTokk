@@ -4,6 +4,7 @@ import (
 	"TikTokk/api"
 	"TikTokk/biz"
 	"TikTokk/store"
+	"TikTokk/utils"
 	"github.com/gin-gonic/gin"
 	"strconv"
 )
@@ -43,7 +44,7 @@ func (c *CRelation) FollowAction(ctx *gin.Context) {
 		ctx.JSON(200, api.FollowActionRsp{StatusCode: 1, StatusMsg: "to_user_id不合法"})
 		return
 	}
-	username := ctx.GetString("username")
+	username := ctx.GetString(utils.Config.IdentityKey)
 	//biz
 	err = c.b.Follow().Action(ctx, username, uint(toUserID), uint(actionType))
 	if err != nil {

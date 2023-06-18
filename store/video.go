@@ -3,6 +3,7 @@ package store
 import (
 	"TikTokk/model"
 	"context"
+	"fmt"
 	"gorm.io/gorm"
 	"time"
 )
@@ -60,7 +61,8 @@ func (s *SVideo) List(ctx context.Context, lastTime time.Time) ([]model.Video, e
 }
 
 func (s *SVideo) Feed(ctx context.Context, l int, lastTime time.Time) ([]model.Video, error) {
-	var list []model.Video
+	fmt.Println(l, "    ", lastTime)
+	list := make([]model.Video, 0, l)
 	err := s.db.Table("videos").Order("updated_at desc").Where("updated_at < ?", lastTime).Limit(l).Find(&list).Error
 	return list, err
 }

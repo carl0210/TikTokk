@@ -4,6 +4,7 @@ import (
 	"TikTokk/api"
 	"TikTokk/biz"
 	"TikTokk/store"
+	"TikTokk/utils"
 	"github.com/gin-gonic/gin"
 	"strconv"
 )
@@ -34,7 +35,7 @@ func (c CComment) FollowAction(ctx *gin.Context) {
 		ctx.JSON(200, rsp)
 		return
 	}
-	username := ctx.GetString("username")
+	username := ctx.GetString(utils.Config.IdentityKey)
 	//对不同类型进行处理
 	if opType == "1" {
 		//获取参数comment_id
