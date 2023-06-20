@@ -1,8 +1,8 @@
 mysql:
   user: "root"
   password: "156156qQ"
-  database: "TikTokk"
-  ip: "192.168.31.29"
+  database: "tiktokk"
+  ip: "localhost"
   port: 3306
   config: "charset=utf8mb4&parseTime=true&loc=Local"
   log-level: 4 # GORM log level, 1: silent, 2:error, 3:warn, 4:info
@@ -15,5 +15,5 @@ feed:
   len: 3
 
 fileSave:
-  file: "http://192.168.31.29:10010/publicSrc/"
-  uploads : "http://192.168.31.29:10010/uploads/"
+  file: "http://192.168.31.30:10001/publicSrc/"
+  uploads : "http://192.168.31.30:10001/uploads/"
