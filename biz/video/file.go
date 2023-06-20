@@ -29,15 +29,19 @@ func sentVideo(f *multipart.FileHeader, videoFileName string) error {
 	writer.Close()
 	//发送请求
 	r, err := http.Post(utils.UploadsSavePath, writer.FormDataContentType(), body)
+	fmt.Println("r= ", r)
 	if err != nil {
 		return err
 	}
 	defer r.Body.Close()
 	//检查请求是否成功
-	code := r.Header.Get("status_code")
-	if code != "0" {
-		msg := r.Header.Get("status_msg")
-		return fmt.Errorf(msg)
+	//从body中读出数据
+	rsp, err := utils.FileToRsp(r.Body)
+	if err != nil {
+		return err
+	}
+	if rsp.StatusCode != 0 {
+		return fmt.Errorf(rsp.StatusMsg)
 	}
 	return nil
 }
