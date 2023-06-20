@@ -16,7 +16,8 @@ func Route() *gin.Engine {
 	relFavoriteC := controller.NewCRelFavorite(store.S)
 	relFollowC := controller.NewCRelation(store.S)
 	messageC := controller.NewCMessage(store.S)
-	e.Static("/publicSrc", "./publicSrc")
+	e.Static("/publicSrc", "./publicSrc/video")
+	e.POST("/uploads/", controller.NewFile(store.S).Uploads)
 	g := e.Group("/douyin")
 	{
 		// /user

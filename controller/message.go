@@ -4,6 +4,7 @@ import (
 	"TikTokk/api"
 	"TikTokk/biz"
 	"TikTokk/store"
+	"TikTokk/utils"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"strconv"
@@ -33,7 +34,7 @@ func (c *CMessage) Action(ctx *gin.Context) {
 		return
 	}
 	//从token中获取name,query参数中得到toUserID、content
-	name := ctx.GetString("username")
+	name := ctx.GetString(utils.Config.IdentityKey)
 	toUserIDStr := ctx.Query("to_user_id")
 	content := ctx.Query("content")
 	//转化toUserIDStr为整型
@@ -54,7 +55,7 @@ func (c *CMessage) Action(ctx *gin.Context) {
 
 func (c *CMessage) Chat(ctx *gin.Context) {
 	//得到name、to_user_id、pre_msg_time
-	name := ctx.GetString("username")
+	name := ctx.GetString(utils.Config.IdentityKey)
 	toUserIDStr := ctx.Query("to_user_id")
 	preMsgTimeStr := ctx.Query("pre_msg_time")
 	//转化toUserID、preMsgTime

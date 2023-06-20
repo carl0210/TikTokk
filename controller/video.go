@@ -32,7 +32,7 @@ func (c *CVideo) Feed(ctx *gin.Context) {
 	var name string
 	token := ctx.Query("token")
 	if len(token) != 0 {
-		name, _ = utils.Parse(token, utils.Config.Key)
+		name, _ = utils.Parse(token, utils.Config.IdentityKey)
 	} else {
 		name = ""
 	}
@@ -79,7 +79,8 @@ func (c *CVideo) PublishAction(ctx *gin.Context) {
 		return
 	}
 	title := ctx.PostForm("title")
-	username := ctx.GetString("username")
+	username := ctx.GetString(utils.Config.IdentityKey)
+	fmt.Println("username=", username)
 	err = c.b.Videos().PublishAction(ctx, file, title, username)
 	if err != nil {
 		rsp.StatusMsg = err.Error()

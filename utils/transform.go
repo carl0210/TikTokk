@@ -3,6 +3,9 @@ package utils
 import (
 	"TikTokk/api"
 	"TikTokk/model"
+	"encoding/json"
+	"io"
+	"io/ioutil"
 )
 
 // VideoToRsp 传入视频结构体和作者结构体
@@ -72,4 +75,19 @@ func MessagestoRsp(m []model.Chat_Message) []api.MessageDetailRsp {
 		}
 	}
 	return r
+}
+
+func FileToRsp(body io.ReadCloser) (*api.FileUploadsRsp, error) {
+	//从body中读出数据
+	data, err := ioutil.ReadAll(body)
+	if err != nil {
+		return nil, err
+	}
+	//反序列化到rsp结构体中
+	var rsp api.FileUploadsRsp
+	err = json.Unmarshal(data, &rsp)
+	if err != nil {
+		return nil, err
+	}
+	return &rsp, nil
 }

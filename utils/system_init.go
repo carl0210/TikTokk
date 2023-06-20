@@ -14,10 +14,11 @@ import (
 )
 
 var (
-	FileSavePath string
-	DB           *gorm.DB
-	once         sync.Once
-	FeedLen      int
+	FileSavePath    string
+	DB              *gorm.DB
+	once            sync.Once
+	FeedLen         int
+	UploadsSavePath string
 )
 
 func InitConfig() {
@@ -35,11 +36,22 @@ func InitMysql() {
 	log := logger.New(
 		log.New(os.Stdout, "\r\n", log.LstdFlags),
 		logger.Config{
-			LogLevel:      logger.Info,
+			LogLevel:      logger.LogLevel(viper.GetInt("mysql.log-level")),
 			SlowThreshold: time.Second,
 			Colorful:      true,
 		})
-	db, err := gorm.Open(mysql.Open(viper.GetString("mysql.dsn")), &gorm.Config{Logger: log})
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?%s",
+		viper.GetString("mysql.user"),
+		viper.GetString("mysql.password"),
+		viper.GetString("mysql.ip"),
+		viper.GetInt("mysql.port"),
+		viper.GetString("mysql.database"),
+		viper.GetString("mysql.config"),
+	)
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
+		Logger: log,
+	})
+	fmt.Println(dsn)
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -48,8 +60,10 @@ func InitMysql() {
 	fmt.Println("Init_Mysql success")
 }
 
-func InitJwt(key, identity string) {
+func InitJwt() {
 	once.Do(func() {
+		key := viper.GetString("jwt.key")
+		identity := viper.GetString("jwt.identityKey")
 		if key != "" {
 			Config.Key = key
 		}
@@ -69,8 +83,9 @@ func InitFeedlen() {
 
 }
 
-func InitFileSavePath() {
-	FileSavePath = viper.GetString("fileSave.path")
+func InitSavePath() {
+	FileSavePath = viper.GetString("fileSave.file")
+	UploadsSavePath = viper.GetString("fileSave.uploads")
 }
 
 func InitConfigTest() {

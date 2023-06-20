@@ -4,6 +4,7 @@ import (
 	"TikTokk/api"
 	"TikTokk/biz"
 	"TikTokk/store"
+	"TikTokk/utils"
 	"github.com/gin-gonic/gin"
 	"strconv"
 )
@@ -72,7 +73,7 @@ func (c *CRelFavorite) FollowAction(ctx *gin.Context) {
 		return
 	}
 	//得到token的username
-	username := ctx.GetString("username")
+	username := ctx.GetString(utils.Config.IdentityKey)
 	if len(username) == 0 {
 		rsp.StatusCode = 1
 		rsp.StatusMsg = "用户名为空"
