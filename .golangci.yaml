@@ -70,7 +70,7 @@ run:
 
   # Define the Go version limit.
   # Mainly related to generics support since go1.18.
-  # Default: use Go version from the go.mod file, fallback on the env var `GOVERSION`, fallback on 1.18
+  # Default: use Go version from the go.mod file, fallback on the env variable `GOVERSION`, fallback on 1.18
   go: '1.19'
 
 
@@ -150,12 +150,12 @@ linters-settings:
     skip-tests: true
 
   decorder:
-    # Required order of `type`, `const`, `var` and `func` declarations inside a file.
+    # Required order of `type`, `const`, `variable` and `func` declarations inside a file.
     # Default: types before constants before variables before functions.
     dec-order:
       - type
       - const
-      - var
+      - variable
       - func
 
     # If true, order of declarations is not checked at all.
@@ -166,7 +166,7 @@ linters-settings:
     # Default: true (disabled)
     disable-init-func-first-check: false
 
-    # If true, multiple global `type`, `const` and `var` declarations are allowed.
+    # If true, multiple global `type`, `const` and `variable` declarations are allowed.
     # Default: true (disabled)
     disable-dec-num-check: false
 
@@ -240,7 +240,7 @@ linters-settings:
     # see https://github.com/kisielk/errcheck#the-deprecated-method for details
     ignore: fmt:.*,io/ioutil:^Read.*
 
-    # To disable the errcheck built-in exclude list.
+    # To disable the errcheck build-in exclude list.
     # See `-excludeonly` option in https://github.com/kisielk/errcheck#excluding-functions for details.
     # Default: false
     disable-default-exclusions: true
@@ -1001,10 +1001,10 @@ linters-settings:
         # Comma-separated list of print function names to check (in addition to default, see `go tool vet help printf`).
         # Default: []
         funcs:
-          - (github.com/golangci/golangci-lint/pkg/logutils.Log).Infof
-          - (github.com/golangci/golangci-lint/pkg/logutils.Log).Warnf
-          - (github.com/golangci/golangci-lint/pkg/logutils.Log).Errorf
-          - (github.com/golangci/golangci-lint/pkg/logutils.Log).Fatalf
+          - (github.com/golangci/golangci-lint/pkg/logtools.Log).Infof
+          - (github.com/golangci/golangci-lint/pkg/logtools.Log).Warnf
+          - (github.com/golangci/golangci-lint/pkg/logtools.Log).Errorf
+          - (github.com/golangci/golangci-lint/pkg/logtools.Log).Fatalf
       shadow:
         # Whether to be strict about shadowing; can be noisy.
         # Default: false
@@ -1132,10 +1132,10 @@ linters-settings:
     # Default: false
     type-require-grouping: true
 
-    # Require the use of a single global 'var' declaration only.
+    # Require the use of a single global 'variable' declaration only.
     # Default: false
     var-require-single-var: true
-    # Require the use of grouped global 'var' declarations.
+    # Require the use of grouped global 'variable' declarations.
     # Default: false
     var-require-grouping: true
 
@@ -1666,14 +1666,14 @@ linters-settings:
         severity: warning
         disabled: false
       # https://github.com/mgechev/revive/blob/master/RULES_DESCRIPTIONS.md#var-naming
-      - name: var-naming
+      - name: variable-naming
         severity: warning
         disabled: false
         arguments:
           - [ "ID" ] # AllowList
           - [ "VM" ] # DenyList
       # https://github.com/mgechev/revive/blob/master/RULES_DESCRIPTIONS.md#var-declaration
-      - name: var-declaration
+      - name: variable-declaration
         severity: warning
         disabled: false
       # https://github.com/mgechev/revive/blob/master/RULES_DESCRIPTIONS.md#unconditional-recursion
@@ -1693,7 +1693,7 @@ linters-settings:
         severity: warning
         disabled: false
         arguments:
-          - "fmt.Printf"
+          - "GetString(utils.Config.IdentityKey)f"
           - "myFunction"
       # https://github.com/mgechev/revive/blob/master/RULES_DESCRIPTIONS.md#unnecessary-stmt
       - name: unnecessary-stmt
@@ -2029,7 +2029,7 @@ linters-settings:
     # Allow multiple comments in the beginning of a block separated with newline.
     allow-separated-leading-comment: false
 
-    # Allow multiple var/declaration statements to be cuddled.
+    # Allow multiple variable/declaration statements to be cuddled.
     allow-cuddle-declarations: false
 
     # A list of call idents that everything can be cuddled with.
