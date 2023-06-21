@@ -6,10 +6,10 @@ import (
 
 //func BenchmarkWithLen(b *testing.B) {
 //	//初始化
-//	utils.InitConfigTest()
-//	utils.InitMysqlTest()
-//	utils.InitStore()
-//	utils.InitFeedlen()
+//	tools.InitConfigTest()
+//	tools.InitMysqlTest()
+//	tools.InitStore()
+//	tools.InitFeedlen()
 //	ctx := context.Background()
 //	b.ResetTimer()
 //	//查询数据库信息
@@ -26,10 +26,10 @@ import (
 //
 //func BenchmarkWithoutLen(b *testing.B) {
 //	//初始化
-//	utils.InitConfigTest()
-//	utils.InitMysqlTest()
-//	utils.InitStore()
-//	utils.InitFeedlen()
+//	tools.InitConfigTest()
+//	tools.InitMysqlTest()
+//	tools.InitStore()
+//	tools.InitFeedlen()
 //	ctx := context.Background()
 //	b.ResetTimer()
 //	_, err := store.S.Videos().ListAllVideoByAuthorID(ctx, 3)
