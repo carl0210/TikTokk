@@ -4,6 +4,7 @@ import (
 	"TikTokk/api"
 	"TikTokk/internal/TikTokk/model"
 	"TikTokk/internal/TikTokk/store"
+	"TikTokk/internal/pkg/encryption"
 	"context"
 	"fmt"
 	"strconv"
@@ -37,7 +38,7 @@ func (b *BUser) Login(ctx context.Context, req *api.LoginUserRequest) (rsp *api.
 		return rsp, err
 	}
 	//存在则对比密码是否一致,一致则返回id
-	if u.Password == password {
+	if encryption.CheckPassword(password, u.Password) {
 		rsp = &api.LoginUserRespond{UserID: int64(u.UserId)}
 		return rsp, nil
 	}
@@ -59,7 +60,7 @@ func (b *BUser) Register(ctx context.Context, req *api.RegisterUserRequest) (*ap
 	//用户名不存在则创建用户
 	user := model.User{
 		Name:            username,
-		Password:        password,
+		Password:        encryption.Encryption(password),
 		Avatar:          "https://cdn.pixabay.com/photo/2016/03/27/18/10/bear-1283347_1280.jpg",
 		BackgroundImage: "https://cdn.pixabay.com/photo/2016/03/27/18/10/bear-1283347_1280.jpg",
 		TotalFavorited:  "0",
