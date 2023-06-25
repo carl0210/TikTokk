@@ -6,6 +6,7 @@ import (
 	"TikTokk/internal/TikTokk/store"
 	"TikTokk/internal/pkg/encryption"
 	"context"
+	"encoding/hex"
 	"fmt"
 	"strconv"
 )
@@ -57,10 +58,12 @@ func (b *BUser) Register(ctx context.Context, req *api.RegisterUserRequest) (*ap
 		rsp = api.RegisterUserRespond{UserID: -1}
 		return &rsp, fmt.Errorf("用户名存在")
 	}
+	enPw := encryption.Encryption(password)
+	pw := hex.EncodeToString(enPw[:])
 	//用户名不存在则创建用户
 	user := model.User{
 		Name:            username,
-		Password:        encryption.Encryption(password),
+		Password:        pw,
 		Avatar:          "https://cdn.pixabay.com/photo/2016/03/27/18/10/bear-1283347_1280.jpg",
 		BackgroundImage: "https://cdn.pixabay.com/photo/2016/03/27/18/10/bear-1283347_1280.jpg",
 		TotalFavorited:  "0",

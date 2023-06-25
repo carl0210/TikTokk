@@ -1,10 +1,13 @@
 package encryption
 
-import "crypto/sha256"
+import (
+	"crypto/sha256"
+	"encoding/hex"
+)
 
-func CheckPassword(p string, e [32]byte) bool {
-	s := sha256.Sum256([]byte(p))
-	if s == e {
+func CheckPassword(p, e string) bool {
+	c := Encryption(p)
+	if hex.EncodeToString(c[:]) == e {
 		return true
 	}
 	return false

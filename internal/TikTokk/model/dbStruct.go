@@ -8,17 +8,17 @@ import (
 
 // 用户详情
 type User struct {
-	UserId          uint     `json:"user_id" gorm:"primarykey"` // 用户id
-	Avatar          string   `json:"avatar"`                    // 用户头像
-	BackgroundImage string   `json:"background_image"`          // 用户个人页顶部大图
-	FavoriteCount   uint     `json:"favorite_count"`            // 喜欢数
-	FollowCount     uint     `json:"follow_count"`              // 关注总数
-	FollowerCount   uint     `json:"follower_count"`            // 粉丝总数
-	Name            string   `json:"name"`                      // 用户名称
-	Signature       string   `json:"signature"`                 // 个人简介
-	TotalFavorited  string   `json:"total_favorited"`           // 获赞数量
-	WorkCount       uint     `json:"work_count"`                // 作品数
-	Password        [32]byte `json:"password"`
+	UserId          uint   `json:"user_id" gorm:"primarykey"` // 用户id
+	Avatar          string `json:"avatar"`                    // 用户头像
+	BackgroundImage string `json:"background_image"`          // 用户个人页顶部大图
+	FavoriteCount   uint   `json:"favorite_count"`            // 喜欢数
+	FollowCount     uint   `json:"follow_count"`              // 关注总数
+	FollowerCount   uint   `json:"follower_count"`            // 粉丝总数
+	Name            string `json:"name"`                      // 用户名称
+	Signature       string `json:"signature"`                 // 个人简介
+	TotalFavorited  string `json:"total_favorited"`           // 获赞数量
+	WorkCount       uint   `json:"work_count"`                // 作品数
+	Password        string `json:"password"`
 	CreatedAt       time.Time
 	UpdatedAt       time.Time
 	DeletedAt       sql.NullTime `gorm:"index"`
