@@ -19,5 +19,5 @@ func main() {
 	//tools.DB.Create(&user)
 	//variable u model.LoginUser
 	//tools.DB.Where("name=?", "ttt").First(&u)
-	//log.Println(u)
+	//Tlog.Println(u)
 }

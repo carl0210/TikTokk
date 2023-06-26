@@ -10,8 +10,8 @@ import (
 )
 
 type IRelFavorite interface {
-	FollowAction(ctx *gin.Context)
-	FollowList(ctx *gin.Context)
+	Action(ctx *gin.Context)
+	List(ctx *gin.Context)
 }
 
 type CRelFavorite struct {
@@ -20,7 +20,11 @@ type CRelFavorite struct {
 
 var _ IRelFavorite = (*CRelFavorite)(nil)
 
-func (c *CRelFavorite) FollowList(ctx *gin.Context) {
+func NewCRelFavorite(db store.DataStore) *CRelFavorite {
+	return &CRelFavorite{b: biz.NewBiz(db)}
+}
+
+func (c *CRelFavorite) List(ctx *gin.Context) {
 	//获取userID
 	userIDStr := ctx.Query("user_id")
 	userID, err := strconv.Atoi(userIDStr)
@@ -47,11 +51,7 @@ func (c *CRelFavorite) FollowList(ctx *gin.Context) {
 
 }
 
-func NewCRelFavorite(db store.DataStore) *CRelFavorite {
-	return &CRelFavorite{b: biz.NewBiz(db)}
-}
-
-func (c *CRelFavorite) FollowAction(ctx *gin.Context) {
+func (c *CRelFavorite) Action(ctx *gin.Context) {
 	var rsp api.FavoriteActionRsp
 	//将参数转为整型
 	//videoID

@@ -5,7 +5,7 @@ mysql:
   ip: "192.168.31.29"
   port: 3306
   config: "charset=utf8mb4&parseTime=true&loc=Local"
-  log-level: 4 # GORM log level, 1: silent, 2:error, 3:warn, 4:info
+  log-level: 4 # GORM Tlog level, 1: silent, 2:error, 3:warn, 4:info
 
 jwt:
   key: "666"

@@ -105,7 +105,7 @@ func (s *SVideo) ListAllVideoByAuthorIDLen(ctx context.Context, authorID uint, l
 //		user = model.user{}
 //	}
 //	author, _ := GetUserByID(strconv.Itoa(int(t.Author_ID)))
-//	log.Println("author=", author)
+//	Tlog.Println("author=", author)
 //	r = *VideoToResOther(&t, &user, &author)
 //	return []model.VideoRsp{r}
 //}

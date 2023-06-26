@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v4"
-	"log"
 	"time"
 )
 
@@ -41,7 +40,6 @@ func Parse(tokenString string, key string) (value string, err error) {
 func ParseByQuery(c *gin.Context) (value string, err error) {
 	//a := c.Request.Header.GetByAuthorID("token")
 	a := c.Query("token")
-	log.Println("len(a)=", len(a))
 	if len(a) == 0 {
 		return "", AuthMissError
 	}
@@ -51,7 +49,6 @@ func ParseByQuery(c *gin.Context) (value string, err error) {
 func ParseByBody(c *gin.Context) (value string, err error) {
 	//a := c.Request.Header.GetByAuthorID("token")
 	a := c.PostForm("token")
-	log.Println("len(a)=", len(a))
 	if len(a) == 0 {
 		return "", AuthMissError
 	}

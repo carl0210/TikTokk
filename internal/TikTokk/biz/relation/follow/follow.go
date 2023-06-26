@@ -27,8 +27,8 @@ func New(db store.DataStore) *BFollowRelation {
 }
 
 func (b *BFollowRelation) Action(ctx context.Context, uName string, toUserID, actionType uint) error {
-	//判断点赞关系中点赞状态和操作类型代表的点赞状态是否相同，不相同则修改，相同则不修改
-	//获取点赞类型
+	//判断关注关系中点赞状态和操作类型代表的关注状态是否相同，不相同则修改，相同则不修改
+	//获取关注类型
 	var isFollow bool
 	var op int
 	if actionType == 1 {
