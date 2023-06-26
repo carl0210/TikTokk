@@ -10,8 +10,8 @@ import (
 )
 
 type IComment interface {
-	FollowAction(ctx *gin.Context)
-	FollowList(ctx *gin.Context)
+	Action(ctx *gin.Context)
+	List(ctx *gin.Context)
 }
 
 type CComment struct {
@@ -24,14 +24,13 @@ func NewCComment(s store.DataStore) *CComment {
 	return &CComment{b: biz.NewBiz(s)}
 }
 
-func (c CComment) FollowAction(ctx *gin.Context) {
-	//得到操作类型
+func (c CComment) Action(ctx *gin.Context) {
 	opType := ctx.Query("action_type")
 	//得到必带的参数
 	videoIDStr := ctx.Query("video_id")
 	videoID, err := strconv.Atoi(videoIDStr)
 	if err != nil {
-		rsp := api.CommentActionRsp{StatusCode: 1, StatusMsg: "video_id不正确", Comment: api.CommentDetailRsp{}}
+		rsp := api.CommentActionRsp{StatusCode: 1, StatusMsg: "video_id incorrect"}
 		ctx.JSON(200, rsp)
 		return
 	}
@@ -43,8 +42,7 @@ func (c CComment) FollowAction(ctx *gin.Context) {
 		//biz
 		rsp, err := c.b.Comment().Create(ctx, uint(videoID), username, text)
 		if err != nil {
-			rsp := api.CommentActionRsp{StatusCode: 1, StatusMsg: err.Error(), Comment: api.CommentDetailRsp{}}
-			ctx.JSON(200, rsp)
+			ctx.JSON(200, api.CommentActionRsp{StatusCode: 1, StatusMsg: err.Error()})
 			return
 		}
 		//创建成功
@@ -58,31 +56,30 @@ func (c CComment) FollowAction(ctx *gin.Context) {
 		commentIDStr := ctx.Query("comment_id")
 		commentID, err := strconv.Atoi(commentIDStr)
 		if err != nil {
-			rsp := api.CommentActionRsp{StatusCode: 1, StatusMsg: "comment_id不正确", Comment: api.CommentDetailRsp{}}
-			ctx.JSON(200, rsp)
+			ctx.JSON(200, api.CommentActionRsp{StatusCode: 1, StatusMsg: "comment_id不正确"})
 			return
 		}
 		//biz
 		err = c.b.Comment().Delete(ctx, uint(commentID), uint(videoID), username)
 		if err != nil {
-			rsp := api.CommentActionRsp{StatusCode: 1, StatusMsg: "comment_id不正确", Comment: api.CommentDetailRsp{}}
+			rsp := api.CommentActionRsp{StatusCode: 1, StatusMsg: "comment_id不正确"}
 			ctx.JSON(200, rsp)
 			return
 		}
 		//删除成功
-		rsp := api.CommentActionRsp{StatusCode: 0, StatusMsg: "删除成功", Comment: api.CommentDetailRsp{}}
+		rsp := api.CommentActionRsp{StatusCode: 0, StatusMsg: "删除成功"}
 		ctx.JSON(200, rsp)
 		return
 	} else {
 		//未知类型
-		rsp := api.CommentActionRsp{StatusCode: 1, StatusMsg: "未知action_type", Comment: api.CommentDetailRsp{}}
+		rsp := api.CommentActionRsp{StatusCode: 1, StatusMsg: "未知action_type"}
 		ctx.JSON(200, rsp)
 		return
 	}
 	return
 }
 
-func (c CComment) FollowList(ctx *gin.Context) {
+func (c CComment) List(ctx *gin.Context) {
 	//得到video_id
 	videoIDStr := ctx.Query("video_id")
 	videoID, err := strconv.Atoi(videoIDStr)

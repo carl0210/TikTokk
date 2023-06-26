@@ -3,24 +3,66 @@ package TikTokk
 import (
 	"TikTokk/internal/TikTokk/controller"
 	"TikTokk/internal/TikTokk/store"
+	"TikTokk/internal/pkg/Tlog"
 	"TikTokk/internal/pkg/middleware"
+	"context"
+	"errors"
 	"github.com/gin-gonic/gin"
+	"io"
+	"log"
+	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
 )
 
 func Run() {
-	engine := route()
-	engine.Run(":6666")
+	//创建路由
+	e := route()
+	//创建并运行server实例
+	httpserver := &http.Server{Addr: "192.168.31.30:8080", Handler: e}
+	go func() {
+		if err := httpserver.ListenAndServe(); err != nil {
+			return
+		}
+	}()
+	//优雅关闭
+	//监听信号,并使用管道阻塞
+	//kill -2 发送 syscall.SIGINT 信号，我们常用的 CTRL + C 就是触发系统 SIGINT 信号
+	//kill -9 发送 syscall.SIGKILL 信号，但是不能被捕获，所以不需要添加它
+	cn := make(chan os.Signal, 1)
+	signal.Notify(cn, syscall.SIGINT, syscall.SIGTERM)
+	<-cn
+	//收到信号后,进行清理工作
+	log.Println("application will be shutdown")
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	//关闭http服务
+	if err := httpserver.Shutdown(ctx); err != nil && errors.Is(err, http.ErrServerClosed) {
+		log.Println(err.Error())
+	}
 }
 
 func route() *gin.Engine {
-
-	e := gin.Default()
+	gin.SetMode("release")
+	e := gin.New()
+	f, err := os.OpenFile("gin.log", os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644)
+	if err != nil {
+		Tlog.Infow(err.Error())
+		panic(err)
+	}
+	defer f.Close()
+	gin.DefaultWriter = io.MultiWriter(os.Stdout, f)
+	e.Use(gin.Recovery())
+	//创建controller实例
 	uc := controller.NewCUser(store.S)
 	vc := controller.NewCVideo(store.S)
 	commC := controller.NewCComment(store.S)
 	relFavoriteC := controller.NewCRelFavorite(store.S)
-	relFollowC := controller.NewCRelation(store.S)
+	relFollowC := controller.NewCRelFollow(store.S)
 	messageC := controller.NewCMessage(store.S)
+	//路由
 	e.Static("/asset", "./asset/video")
 	e.POST("/uploads/", controller.NewFile(store.S).Uploads)
 	g := e.Group("/douyin")
@@ -43,14 +85,14 @@ func route() *gin.Engine {
 		//favorite
 		favoriteG := g.Group("/favorite")
 		{
-			favoriteG.GET("/list/", middleware.AuthnByQuery(), relFavoriteC.FollowList)
-			favoriteG.POST("/action/", middleware.AuthnByQuery(), relFavoriteC.FollowAction)
+			favoriteG.GET("/list/", middleware.AuthnByQuery(), relFavoriteC.List)
+			favoriteG.POST("/action/", middleware.AuthnByQuery(), relFavoriteC.Action)
 		}
 		//comment
 		commentG := g.Group("/comment")
 		{
-			commentG.POST("/action/", middleware.AuthnByQuery(), commC.FollowAction)
-			commentG.GET("/list/", middleware.AuthnByQuery(), commC.FollowList)
+			commentG.POST("/action/", middleware.AuthnByQuery(), commC.Action)
+			commentG.GET("/list/", middleware.AuthnByQuery(), commC.List)
 		}
 		//relation
 		relationG := g.Group("/relation")

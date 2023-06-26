@@ -1,0 +1,257 @@
+2023-06-26 19:25:00.403	info	application will be shutdown
+2023-06-26 19:25:01.688	info	init_logg successful
+2023-06-26 19:25:01.695	info	Init_Mysql success
+2023-06-26 19:25:01.696	info	Init_TikTokk success
+2023-06-26 19:25:01.696	info	TikTokInit Successful
+2023-06-26 19:25:38.109	info	application will be shutdown
+2023-06-26 19:25:41.176	info	init_logg successful
+2023-06-26 19:25:41.184	info	Init_Mysql success
+2023-06-26 19:25:41.184	info	Init_TikTokk success
+2023-06-26 19:25:41.184	info	TikTokInit Successful
+2023-06-26 19:27:36.569	info	application will be shutdown
+2023-06-26 19:27:39.650	info	init_logg successful
+2023-06-26 19:27:39.659	info	Init_Mysql success
+2023-06-26 19:27:39.660	info	Init_TikTokk success
+2023-06-26 19:27:39.660	info	TikTokInit Successful
+2023-06-26 19:27:58.520	info	application will be shutdown
+2023-06-26 19:28:09.276	info	init_logg successful
+2023-06-26 19:28:09.283	info	Init_Mysql success
+2023-06-26 19:28:09.284	info	Init_TikTokk success
+2023-06-26 19:28:09.284	info	TikTokInit Successful
+2023-06-26 19:28:09.284	panic	open gin.log: The system cannot find the file specified.
+TikTokk/internal/TikTokk.route
+	E:/GoProjects/TikTokk/TikTokk/internal/TikTokk/TikTokk.go:52
+TikTokk/internal/TikTokk.Run
+	E:/GoProjects/TikTokk/TikTokk/internal/TikTokk/TikTokk.go:22
+main.main
+	E:/GoProjects/TikTokk/TikTokk/cmd/TikTokk/TikTokk.go:7
+runtime.main
+	C:/GoSDK/go1.20.3/src/runtime/proc.go:250
+2023-06-26 19:28:17.912	info	init_logg successful
+2023-06-26 19:28:17.921	info	Init_Mysql success
+2023-06-26 19:28:17.921	info	Init_TikTokk success
+2023-06-26 19:28:17.921	info	TikTokInit Successful
+2023-06-26 19:29:43.762	info	application will be shutdown
+2023-06-26 19:29:46.761	info	init_logg successful
+2023-06-26 19:29:46.770	info	Init_Mysql success
+2023-06-26 19:29:46.770	info	Init_TikTokk success
+2023-06-26 19:29:46.770	info	TikTokInit Successful
+2023-06-26 19:29:50.595	info	application will be shutdown
+2023-06-26 19:29:51.882	info	init_logg successful
+2023-06-26 19:29:51.890	info	Init_Mysql success
+2023-06-26 19:29:51.890	info	Init_TikTokk success
+2023-06-26 19:29:51.890	info	TikTokInit Successful
+2023-06-26 19:30:08.343	info	application will be shutdown
+2023-06-26 19:30:11.468	info	init_logg successful
+2023-06-26 19:30:11.477	info	Init_Mysql success
+2023-06-26 19:30:11.477	info	Init_TikTokk success
+2023-06-26 19:30:11.477	info	TikTokInit Successful
+2023-06-26 19:30:20.234	info	application will be shutdown
+2023-06-26 19:30:21.517	info	init_logg successful
+2023-06-26 19:30:21.525	info	Init_Mysql success
+2023-06-26 19:30:21.525	info	Init_TikTokk success
+2023-06-26 19:30:21.525	info	TikTokInit Successful
+2023-06-26 19:30:34.118	info	application will be shutdown
+2023-06-26 19:30:37.187	info	init_logg successful
+2023-06-26 19:30:37.196	info	Init_Mysql success
+2023-06-26 19:30:37.196	info	Init_TikTokk success
+2023-06-26 19:30:37.196	info	TikTokInit Successful
+2023-06-26 19:31:03.570	info	application will be shutdown
+2023-06-26 19:31:30.610	info	init_logg successful
+2023-06-26 19:31:30.618	info	Init_Mysql success
+2023-06-26 19:31:30.618	info	Init_TikTokk success
+2023-06-26 19:31:30.619	info	TikTokInit Successful
+2023-06-26 19:31:32.097	info	application will be shutdown
+2023-06-26 19:31:35.287	info	init_logg successful
+2023-06-26 19:31:35.295	info	Init_Mysql success
+2023-06-26 19:31:35.295	info	Init_TikTokk success
+2023-06-26 19:31:35.295	info	TikTokInit Successful
+2023-06-26 19:32:46.246	info	init_logg successful
+2023-06-26 19:32:46.256	info	Init_Mysql success
+2023-06-26 19:32:46.256	info	Init_TikTokk success
+2023-06-26 19:32:46.256	info	TikTokInit Successful
+2023-06-26 19:32:50.871	info	application will be shutdown
+2023-06-26 19:32:52.207	info	init_logg successful
+2023-06-26 19:32:52.216	info	Init_Mysql success
+2023-06-26 19:32:52.216	info	Init_TikTokk success
+2023-06-26 19:32:52.216	info	TikTokInit Successful
+2023-06-26 19:33:01.852	info	application will be shutdown
+2023-06-26 19:33:04.884	info	init_logg successful
+2023-06-26 19:33:04.893	info	Init_Mysql success
+2023-06-26 19:33:04.893	info	Init_TikTokk success
+2023-06-26 19:33:04.893	info	TikTokInit Successful
+2023-06-26 19:33:16.655	info	application will be shutdown
+2023-06-26 19:33:38.476	info	init_logg successful
+2023-06-26 19:33:38.486	info	Init_Mysql success
+2023-06-26 19:33:38.486	info	Init_TikTokk success
+2023-06-26 19:33:38.486	info	TikTokInit Successful
+2023-06-26 19:35:32.528	info	application will be shutdown
+2023-06-26 19:35:35.548	info	init_logg successful
+2023-06-26 19:35:35.556	info	Init_Mysql success
+2023-06-26 19:35:35.556	info	Init_TikTokk success
+2023-06-26 19:35:35.556	info	TikTokInit Successful
+2023-06-26 19:35:59.040	info	init_logg successful
+2023-06-26 19:35:59.049	info	Init_Mysql success
+2023-06-26 19:35:59.049	info	Init_TikTokk success
+2023-06-26 19:35:59.049	info	TikTokInit Successful
+2023-06-26 19:36:24.477	info	application will be shutdown
+2023-06-26 19:36:25.776	info	init_logg successful
+2023-06-26 19:36:25.785	info	Init_Mysql success
+2023-06-26 19:36:25.785	info	Init_TikTokk success
+2023-06-26 19:36:25.785	info	TikTokInit Successful
+2023-06-26 19:37:27.588	info	application will be shutdown
+2023-06-26 19:37:31.863	info	application will be shutdown
+2023-06-26 19:37:53.891	info	init_logg successful
+2023-06-26 19:37:53.900	info	Init_Mysql success
+2023-06-26 19:37:53.900	info	Init_TikTokk success
+2023-06-26 19:37:53.900	info	TikTokInit Successful
+2023-06-26 19:38:19.615	info	application will be shutdown
+2023-06-26 20:52:04.704	info	init_logg successful
+2023-06-26 20:52:04.717	info	Init_Mysql successful
+2023-06-26 20:52:04.717	info	Init_TikTokk successful
+2023-06-26 20:52:04.717	info	TikTokInit Successful
+2023-06-26 20:53:34.460	info	application will be shutdown
+2023-06-26 20:53:35.683	info	init_logg successful
+2023-06-26 20:53:35.692	info	Init_Mysql successful
+2023-06-26 20:53:35.692	info	Init_TikTokk successful
+2023-06-26 20:53:35.692	info	TikTokInit Successful
+2023-06-26 20:54:03.088	info	application will be shutdown
+2023-06-26 20:54:06.220	info	init_logg successful
+2023-06-26 20:54:06.228	info	Init_Mysql successful
+2023-06-26 20:54:06.228	info	Init_TikTokk successful
+2023-06-26 20:54:06.228	info	TikTokInit Successful
+2023-06-26 20:54:28.089	info	application will be shutdown
+2023-06-26 20:54:29.325	info	init_logg successful
+2023-06-26 20:54:29.333	info	Init_Mysql successful
+2023-06-26 20:54:29.333	info	Init_TikTokk successful
+2023-06-26 20:54:29.333	info	TikTokInit Successful
+2023-06-26 20:56:03.804	info	鉴权方法不同
+2023-06-26 20:56:03.804	info	鉴权方法不同
+2023-06-26 20:56:03.810	info	鉴权方法不同
+2023-06-26 20:56:03.814	info	鉴权方法不同
+2023-06-26 20:59:41.461	info	application will be shutdown
+2023-06-26 20:59:44.838	info	init_logg successful
+2023-06-26 20:59:44.846	info	Init_Mysql successful
+2023-06-26 20:59:44.846	info	Init_TikTokk successful
+2023-06-26 20:59:44.846	info	TikTokInit Successful
+2023-06-26 21:00:05.132	info	application will be shutdown
+2023-06-26 21:00:21.506	info	init_logg successful
+2023-06-26 21:00:21.515	info	Init_Mysql successful
+2023-06-26 21:00:21.515	info	Init_TikTokk successful
+2023-06-26 21:00:21.515	info	TikTokInit Successful
+2023-06-26 21:07:45.440	info	application will be shutdown
+2023-06-26 21:07:48.790	info	init_logg successful
+2023-06-26 21:07:48.798	info	Init_Mysql successful
+2023-06-26 21:07:48.798	info	Init_TikTokk successful
+2023-06-26 21:07:48.798	info	TikTokInit Successful
+2023-06-26 21:08:02.265	info	FollowAction callers	{"request header=": {"Accept-Encoding":["gzip"],"Connection":["Keep-Alive"],"Content-Length":["0"],"User-Agent":["okhttp/3.14.9"]}}
+2023-06-26 21:08:40.866	info	application will be shutdown
+2023-06-26 21:32:33.024	info	init_logg successful
+2023-06-26 21:32:33.033	info	Init_Mysql successful
+2023-06-26 21:32:33.033	info	Init_TikTokk successful
+2023-06-26 21:32:33.033	info	TikTokInit Successful
+2023-06-26 21:33:33.858	info	application will be shutdown
+2023-06-26 21:33:35.066	info	init_logg successful
+2023-06-26 21:33:35.075	info	Init_Mysql successful
+2023-06-26 21:33:35.075	info	Init_TikTokk successful
+2023-06-26 21:33:35.075	info	TikTokInit Successful
+2023-06-26 21:33:56.245	info	application will be shutdown
+2023-06-26 21:35:02.214	info	init_logg successful
+2023-06-26 21:35:02.221	info	Init_Mysql successful
+2023-06-26 21:35:02.221	info	Init_TikTokk successful
+2023-06-26 21:35:02.221	info	TikTokInit Successful
+2023-06-26 21:35:53.502	info	application will be shutdown
+2023-06-26 21:35:56.532	info	init_logg successful
+2023-06-26 21:35:56.541	info	Init_Mysql successful
+2023-06-26 21:35:56.541	info	Init_TikTokk successful
+2023-06-26 21:35:56.541	info	TikTokInit Successful
+2023-06-26 21:37:33.918	info	application will be shutdown
+2023-06-26 21:37:37.041	info	init_logg successful
+2023-06-26 21:37:37.049	info	Init_Mysql successful
+2023-06-26 21:37:37.049	info	Init_TikTokk successful
+2023-06-26 21:37:37.049	info	TikTokInit Successful
+2023-06-26 21:40:46.974	info	application will be shutdown
+2023-06-26 21:40:49.858	info	init_logg successful
+2023-06-26 21:40:49.866	info	Init_Mysql successful
+2023-06-26 21:40:49.866	info	Init_TikTokk successful
+2023-06-26 21:40:49.866	info	TikTokInit Successful
+2023-06-26 21:41:25.534	info	application will be shutdown
+2023-06-26 21:41:28.548	info	init_logg successful
+2023-06-26 21:41:28.556	info	Init_Mysql successful
+2023-06-26 21:41:28.557	info	Init_TikTokk successful
+2023-06-26 21:41:28.557	info	TikTokInit Successful
+2023-06-26 21:42:01.514	info	application will be shutdown
+2023-06-26 21:42:04.336	info	init_logg successful
+2023-06-26 21:42:04.345	info	Init_Mysql successful
+2023-06-26 21:42:04.345	info	Init_TikTokk successful
+2023-06-26 21:42:04.345	info	TikTokInit Successful
+2023-06-26 21:42:39.255	info	application will be shutdown
+2023-06-26 21:42:42.462	info	init_logg successful
+2023-06-26 21:42:42.470	info	Init_Mysql successful
+2023-06-26 21:42:42.471	info	Init_TikTokk successful
+2023-06-26 21:42:42.471	info	TikTokInit Successful
+2023-06-26 21:48:25.058	info	application will be shutdown
+2023-06-26 21:48:28.296	info	init_logg successful
+2023-06-26 21:48:28.305	info	Init_Mysql successful
+2023-06-26 21:48:28.305	info	Init_TikTokk successful
+2023-06-26 21:48:28.305	info	TikTokInit Successful
+2023-06-26 21:49:21.362	info	application will be shutdown
+2023-06-26 21:49:22.762	info	init_logg successful
+2023-06-26 21:49:22.772	info	Init_Mysql successful
+2023-06-26 21:49:22.772	info	Init_TikTokk successful
+2023-06-26 21:49:22.772	info	TikTokInit Successful
+2023-06-26 21:49:38.798	info	application will be shutdown
+2023-06-26 21:49:41.769	info	init_logg successful
+2023-06-26 21:49:41.778	info	Init_Mysql successful
+2023-06-26 21:49:41.778	info	Init_TikTokk successful
+2023-06-26 21:49:41.778	info	TikTokInit Successful
+2023-06-26 21:50:35.504	info	application will be shutdown
+2023-06-26 21:50:39.078	info	init_logg successful
+2023-06-26 21:50:39.087	info	Init_Mysql successful
+2023-06-26 21:50:39.087	info	Init_TikTokk successful
+2023-06-26 21:50:39.087	info	TikTokInit Successful
+2023-06-26 21:51:05.849	info	application will be shutdown
+2023-06-26 21:51:09.309	info	init_logg successful
+2023-06-26 21:51:09.318	info	Init_Mysql successful
+2023-06-26 21:51:09.318	info	Init_TikTokk successful
+2023-06-26 21:51:09.318	info	TikTokInit Successful
+2023-06-26 21:52:45.896	info	application will be shutdown
+2023-06-26 21:52:49.157	info	init_logg successful
+2023-06-26 21:52:49.165	info	Init_Mysql successful
+2023-06-26 21:52:49.165	info	Init_TikTokk successful
+2023-06-26 21:52:49.165	info	TikTokInit Successful
+2023-06-26 21:53:50.760	info	application will be shutdown
+2023-06-26 21:53:57.614	info	init_logg successful
+2023-06-26 21:53:57.623	info	Init_Mysql successful
+2023-06-26 21:53:57.623	info	Init_TikTokk successful
+2023-06-26 21:53:57.623	info	TikTokInit Successful
+2023-06-26 21:55:28.565	info	application will be shutdown
+2023-06-26 21:55:31.564	info	init_logg successful
+2023-06-26 21:55:31.574	info	Init_Mysql successful
+2023-06-26 21:55:31.574	info	Init_TikTokk successful
+2023-06-26 21:55:31.574	info	TikTokInit Successful
+2023-06-26 21:56:10.382	info	application will be shutdown
+2023-06-26 21:59:19.734	info	init_logg successful
+2023-06-26 21:59:19.742	info	Init_Mysql successful
+2023-06-26 21:59:19.742	info	Init_TikTokk successful
+2023-06-26 21:59:19.742	info	TikTokInit Successful
+2023-06-26 21:59:32.405	info	init_logg successful
+2023-06-26 21:59:32.413	info	Init_Mysql successful
+2023-06-26 21:59:32.414	info	Init_TikTokk successful
+2023-06-26 21:59:32.414	info	TikTokInit Successful
+2023-06-26 21:59:48.929	info	application will be shutdown
+2023-06-26 21:59:52.319	info	init_logg successful
+2023-06-26 21:59:52.327	info	Init_Mysql successful
+2023-06-26 21:59:52.327	info	Init_TikTokk successful
+2023-06-26 21:59:52.327	info	TikTokInit Successful
+2023-06-26 22:08:18.570	info	application will be shutdown
+2023-06-26 22:09:41.856	info	init_logg successful
+2023-06-26 22:09:41.865	info	Init_Mysql successful
+2023-06-26 22:09:41.865	info	Init_TikTokk successful
+2023-06-26 22:09:41.865	info	TikTokInit Successful
+2023-06-26 22:09:51.851	info	application will be shutdown
+2023-06-26 22:10:05.910	info	init_logg successful
+2023-06-26 22:10:05.919	info	Init_Mysql successful
+2023-06-26 22:10:05.919	info	Init_TikTokk successful
+2023-06-26 22:10:05.919	info	TikTokInit Successful
+2023-06-26 22:10:26.096	info	application will be shutdown

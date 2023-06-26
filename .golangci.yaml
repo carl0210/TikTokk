@@ -112,7 +112,7 @@ linters-settings:
     # To specify a set of function names to exclude.
     # The values are merged with the builtin exclusions.
     # The builtin exclusions can be disabled by setting `use-builtin-exclusions` to `false`.
-    # Default: ["^(fmt|log|logger|t|)\.(Print|Fprint|Sprint|Fatal|Panic|Error|Warn|Warning|Info|Debug|Log)(|f|ln)$"]
+    # Default: ["^(fmt|Tlog|logger|t|)\.(Print|Fprint|Sprint|Fatal|Panic|Error|Warn|Warning|Info|Debug|Log)(|f|ln)$"]
     exclude:
       - Append
       - \.Wrapf
@@ -553,7 +553,7 @@ linters-settings:
         # If set to true, identical to failOn='all', otherwise failOn=''
         failOnError: false
         # Determines the behavior when an error occurs while parsing ruleguard files.
-        # If flag is not set, log error and skip rule files that contain an error.
+        # If flag is not set, Tlog error and skip rule files that contain an error.
         # If flag is set, the value must be a comma-separated list of error conditions.
         # - 'all':    fail on all errors.
         # - 'import': ruleguard rule imports a package that cannot be found.
@@ -1209,7 +1209,7 @@ linters-settings:
     tab-width: 1
 
   loggercheck:
-    # Allow check for the github.com/go-kit/log library.
+    # Allow check for the github.com/go-kit/Tlog library.
     # Default: true
     kitlog: false
     # Allow check for the k8s.io/klog/v2 library.

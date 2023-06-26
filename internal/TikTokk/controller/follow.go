@@ -4,7 +4,9 @@ import (
 	"TikTokk/api"
 	"TikTokk/internal/TikTokk/biz"
 	"TikTokk/internal/TikTokk/store"
+	"TikTokk/internal/pkg/Tlog"
 	"TikTokk/internal/pkg/token"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"strconv"
 )
@@ -22,12 +24,15 @@ type CRelation struct {
 
 var _ IRelation = (*CRelation)(nil)
 
-func NewCRelation(ds store.DataStore) *CRelation {
+func NewCRelFollow(ds store.DataStore) *CRelation {
 	return &CRelation{b: biz.NewBiz(ds)}
 }
 
 func (c *CRelation) FollowAction(ctx *gin.Context) {
 	//得到username、action_type、to_user_id
+	//得到操作类型
+	Tlog.Infow("FollowAction callers", "request header=", ctx.Request.Header)
+	fmt.Println("ctx.request.header=", ctx.Request.Header)
 	actionTypeStr := ctx.Query("action_type")
 	actionType, err := strconv.Atoi(actionTypeStr)
 	if err != nil {
