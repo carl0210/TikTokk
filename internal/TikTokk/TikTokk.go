@@ -3,12 +3,10 @@ package TikTokk
 import (
 	"TikTokk/internal/TikTokk/controller"
 	"TikTokk/internal/TikTokk/store"
-	"TikTokk/internal/pkg/Tlog"
 	"TikTokk/internal/pkg/middleware"
 	"context"
 	"errors"
 	"github.com/gin-gonic/gin"
-	"io"
 	"log"
 	"net/http"
 	"os"
@@ -47,15 +45,9 @@ func Run() {
 func route() *gin.Engine {
 	gin.SetMode("release")
 	e := gin.New()
-	f, err := os.OpenFile("gin.log", os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644)
-	if err != nil {
-		Tlog.Infow(err.Error())
-		panic(err)
-	}
-	defer f.Close()
-	gin.DefaultWriter = io.MultiWriter(os.Stdout, f)
-	e.Use(gin.Recovery())
+	e.Use(gin.Recovery(), middleware.GinLogger())
 	//创建controller实例
+	gin.Logger()
 	uc := controller.NewCUser(store.S)
 	vc := controller.NewCVideo(store.S)
 	commC := controller.NewCComment(store.S)
