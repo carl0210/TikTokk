@@ -255,3 +255,60 @@ runtime.main
 2023-06-26 22:10:05.919	info	Init_TikTokk successful
 2023-06-26 22:10:05.919	info	TikTokInit Successful
 2023-06-26 22:10:26.096	info	application will be shutdown
+2023-06-26 22:16:36.886	info	init_logg successful
+2023-06-26 22:16:36.894	info	Init_Mysql successful
+2023-06-26 22:16:36.894	info	Init_TikTokk successful
+2023-06-26 22:16:36.894	info	TikTokInit Successful
+2023-06-26 22:17:35.408	info	application will be shutdown
+2023-06-26 22:18:23.429	info	init_logg successful
+2023-06-26 22:18:23.438	info	Init_Mysql successful
+2023-06-26 22:18:23.439	info	Init_TikTokk successful
+2023-06-26 22:18:23.439	info	TikTokInit Successful
+2023-06-26 22:18:34.361	info	application will be shutdown
+2023-06-26 22:19:31.646	info	init_logg successful
+2023-06-26 22:19:31.654	info	Init_Mysql successful
+2023-06-26 22:19:31.655	info	Init_TikTokk successful
+2023-06-26 22:19:31.655	info	TikTokInit Successful
+2023-06-26 22:20:18.584	info	application will be shutdown
+2023-06-26 22:20:22.038	info	init_logg successful
+2023-06-26 22:20:22.048	info	Init_Mysql successful
+2023-06-26 22:20:22.048	info	Init_TikTokk successful
+2023-06-26 22:20:22.048	info	TikTokInit Successful
+2023-06-26 22:22:30.041	info	application will be shutdown
+2023-06-26 22:22:33.522	info	init_logg successful
+2023-06-26 22:22:33.532	info	Init_Mysql successful
+2023-06-26 22:22:33.532	info	Init_TikTokk successful
+2023-06-26 22:22:33.532	info	TikTokInit Successful
+2023-06-26 22:24:24.789	info	application will be shutdown
+2023-06-26 22:24:28.248	info	init_logg successful
+2023-06-26 22:24:28.258	info	Init_Mysql successful
+2023-06-26 22:24:28.258	info	Init_TikTokk successful
+2023-06-26 22:24:28.258	info	TikTokInit Successful
+2023-06-26 22:28:14.445	info	application will be shutdown
+2023-06-26 22:31:39.694	info	init_logg successful
+2023-06-26 22:31:39.704	info	Init_Mysql successful
+2023-06-26 22:31:39.704	info	Init_TikTokk successful
+2023-06-26 22:31:39.704	info	TikTokInit Successful
+2023-06-26 22:31:45.673	info	Gin request	{"status": 200, "method": "GET", "path": "/douyin/feed/", "clientIP": "192.168.31.154", "userAgent": "okhttp/3.14.9", "latency": 1.7684}
+2023-06-26 22:32:24.646	info	application will be shutdown
+2023-06-26 22:44:23.507	info	init_logg successful
+2023-06-26 22:44:23.516	info	Init_Mysql successful
+2023-06-26 22:44:23.516	info	Init_TikTokk successful
+2023-06-26 22:44:23.516	info	TikTokInit Successful
+2023-06-26 22:44:29.912	info	[GIN] 2023/06/26 - 22:44:29 | 200 |      9.3716ms |  192.168.31.154 |GET     "/douyin/feed/"
+
+2023-06-26 22:45:08.827	info	application will be shutdown
+2023-06-26 22:45:11.806	info	init_logg successful
+2023-06-26 22:45:11.815	info	Init_Mysql successful
+2023-06-26 22:45:11.815	info	Init_TikTokk successful
+2023-06-26 22:45:11.815	info	TikTokInit Successful
+2023-06-26 22:45:12.909	info	[GIN] 2023/06/26 - 22:45:12 |200|     4.5523ms| 192.168.31.154|GET     "/douyin/feed/"
+
+2023-06-26 22:48:04.611	info	application will be shutdown
+2023-06-26 22:48:13.105	info	init_logg successful
+2023-06-26 22:48:13.113	info	Init_Mysql successful
+2023-06-26 22:48:13.113	info	Init_TikTokk successful
+2023-06-26 22:48:13.113	info	TikTokInit Successful
+2023-06-26 22:48:20.488	info	[GIN] 2023/06/26 - 22:48:20.481 |200|     7.3168ms| 192.168.31.154|POST    "/douyin/favorite/action/"
+
+2023-06-26 22:49:11.834	info	application will be shutdown

@@ -24,14 +24,14 @@ type Logger interface {
 var _ Logger = (*zapLogger)(nil)
 
 var (
-	std *zapLogger
+	Std *zapLogger
 	mu  sync.Mutex
 )
 
 func Init(opts *Options) {
 	mu.Lock()
 	defer mu.Unlock()
-	std = NewLogger(opts)
+	Std = NewLogger(opts)
 }
 
 func NewLogger(op *Options) *zapLogger {
@@ -98,29 +98,29 @@ func (z *zapLogger) Sync() {
 }
 
 func Debugw(msg string, keysAndValues ...interface{}) {
-	std.z.Sugar().Debugw(msg, keysAndValues...)
+	Std.z.Sugar().Debugw(msg, keysAndValues...)
 }
 
 func Infow(msg string, keysAndValues ...interface{}) {
-	std.z.Sugar().Infow(msg, keysAndValues...)
+	Std.z.Sugar().Infow(msg, keysAndValues...)
 }
 
 func Warnw(msg string, keysAndValues ...interface{}) {
-	std.z.Sugar().Warnw(msg, keysAndValues...)
+	Std.z.Sugar().Warnw(msg, keysAndValues...)
 }
 
 func Errorw(msg string, keysAndValues ...interface{}) {
-	std.z.Sugar().Errorw(msg, keysAndValues...)
+	Std.z.Sugar().Errorw(msg, keysAndValues...)
 }
 
 func Panicw(msg string, keysAndValues ...interface{}) {
-	std.z.Sugar().Panicw(msg, keysAndValues...)
+	Std.z.Sugar().Panicw(msg, keysAndValues...)
 }
 
 func Fatalw(msg string, keysAndValues ...interface{}) {
-	std.z.Sugar().Fatalw(msg, keysAndValues...)
+	Std.z.Sugar().Fatalw(msg, keysAndValues...)
 }
 
 func Sync() {
-	std.z.Sugar().Sync()
+	Std.z.Sugar().Sync()
 }
