@@ -47,7 +47,6 @@ func route() *gin.Engine {
 	e := gin.New()
 	e.Use(gin.Recovery(), middleware.GinLogger())
 	//创建controller实例
-	gin.Logger()
 	uc := controller.NewCUser(store.S)
 	vc := controller.NewCVideo(store.S)
 	commC := controller.NewCComment(store.S)
