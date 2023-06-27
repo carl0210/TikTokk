@@ -5,6 +5,7 @@ import (
 	"TikTokk/internal/TikTokk/biz"
 	"TikTokk/internal/TikTokk/store"
 	"TikTokk/internal/pkg/token"
+	"fmt"
 	"github.com/gin-gonic/gin"
 )
 
@@ -26,8 +27,12 @@ func NewCUser(db store.DataStore) *CUser {
 
 func (c *CUser) Login(ctx *gin.Context) {
 	var req api.LoginUserRequest
-	req.Username = ctx.Query("username")
-	req.Password = ctx.Query("password")
+	if err := ctx.Bind(&req); err != nil {
+		fmt.Println(ctx.Request.URL.Query())
+		fmt.Println(err)
+		ctx.JSON(200, api.LoginUserRespond{StatusCode: 1, StatusMsg: "invalid field"})
+		return
+	}
 	rsp, err := c.bz.Users().Login(ctx, &req)
 	if err != nil {
 		rsp.StatusMsg = err.Error()
@@ -44,8 +49,10 @@ func (c *CUser) Login(ctx *gin.Context) {
 
 func (c *CUser) Register(ctx *gin.Context) {
 	var req api.RegisterUserRequest
-	req.Username = ctx.Query("username")
-	req.Password = ctx.Query("password")
+	if err := ctx.BindQuery(&req); err != nil {
+		ctx.JSON(200, api.RegisterUserRespond{StatusCode: 1, StatusMsg: "invalid filed"})
+		return
+	}
 	rsp, err := c.bz.Users().Register(ctx, &req)
 	if err != nil {
 		rsp.StatusCode = 1
@@ -62,7 +69,9 @@ func (c *CUser) Register(ctx *gin.Context) {
 
 func (c *CUser) GetDetail(ctx *gin.Context) {
 	var req api.GetDetailUserRequest
-	req.UserID = ctx.Query("user_id")
+	if err := ctx.BindQuery(&req); err != nil {
+		ctx.JSON(200, api.GetDetailUserRespond{StatusCode: 1, StatusMsg: "invalid filed"})
+	}
 	rsp, err := c.bz.Users().GetDetail(ctx, &req)
 	if err != nil {
 		rsp.StatusCode = 1

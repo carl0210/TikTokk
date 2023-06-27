@@ -52,44 +52,19 @@ func (c *CRelFavorite) List(ctx *gin.Context) {
 }
 
 func (c *CRelFavorite) Action(ctx *gin.Context) {
-	var rsp api.FavoriteActionRsp
-	//将参数转为整型
-	//videoID
-	videoIDStr := ctx.Query("video_id")
-	videoID, err := strconv.Atoi(videoIDStr)
-	if err != nil {
-		rsp.StatusCode = 1
-		rsp.StatusMsg = err.Error()
-		ctx.JSON(200, rsp)
-		return
-	}
-	//actionType
-	actionTypeStr := ctx.Query("action_type")
-	actionType, err := strconv.Atoi(actionTypeStr)
-	if err != nil {
-		rsp.StatusCode = 1
-		rsp.StatusMsg = err.Error()
-		ctx.JSON(200, rsp)
+	var req api.FavoriteActionReq
+	if err := ctx.BindQuery(&req); err != nil {
+		ctx.JSON(200, api.FavoriteActionRsp{StatusCode: 1, StatusMsg: "invalid filed"})
 		return
 	}
 	//得到token的username
 	username := ctx.GetString(token.Config.IdentityKey)
-	if len(username) == 0 {
-		rsp.StatusCode = 1
-		rsp.StatusMsg = "用户名为空"
-		ctx.JSON(200, rsp)
-		return
-	}
-	err = c.b.FavoriteRel().Action(ctx, uint(videoID), uint(actionType), username)
+	err := c.b.FavoriteRel().Action(ctx, uint(req.VideoID), uint(req.ActionType), username)
 	if err != nil {
-		rsp.StatusCode = 1
-		rsp.StatusMsg = err.Error()
-		ctx.JSON(200, rsp)
+		ctx.JSON(200, api.FavoriteActionRsp{StatusCode: 1, StatusMsg: err.Error()})
 		return
 	}
 
-	rsp.StatusCode = 0
-	rsp.StatusMsg = "操作成功!"
-	ctx.JSON(200, rsp)
+	ctx.JSON(200, api.FavoriteActionRsp{StatusCode: 0, StatusMsg: "操作成功!"})
 	return
 }

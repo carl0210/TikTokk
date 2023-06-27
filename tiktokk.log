@@ -312,3 +312,234 @@ runtime.main
 2023-06-26 22:48:20.488	info	[GIN] 2023/06/26 - 22:48:20.481 |200|     7.3168ms| 192.168.31.154|POST    "/douyin/favorite/action/"
 
 2023-06-26 22:49:11.834	info	application will be shutdown
+2023-06-26 23:01:40.828	info	init_logg successful
+2023-06-26 23:01:40.839	info	Init_Mysql successful
+2023-06-26 23:01:40.839	info	Init_TikTokk successful
+2023-06-26 23:01:40.839	info	TikTokInit Successful
+2023-06-26 23:01:51.085	info	[GIN] 2023/06/26 - 23:01:51.081 |200|     3.3165ms| 192.168.31.154|GET     "/douyin/publish/list/"
+
+2023-06-26 23:01:51.091	info	[GIN] 2023/06/26 - 23:01:51.087 |200|     3.4417ms| 192.168.31.154|GET     "/douyin/favorite/list/"
+
+2023-06-26 23:01:54.602	info	[GIN] 2023/06/26 - 23:01:54.601 |200|     1.6751ms| 192.168.31.154|GET     "/douyin/relation/friend/list/"
+
+2023-06-26 23:01:54.607	info	[GIN] 2023/06/26 - 23:01:54.603 |200|     4.5049ms| 192.168.31.154|GET     "/douyin/feed/"
+
+2023-06-26 23:01:54.790	info	[GIN] 2023/06/26 - 23:01:54.787 |200|     2.2656ms| 192.168.31.154|GET     "/douyin/favorite/list/"
+
+2023-06-26 23:01:54.794	info	[GIN] 2023/06/26 - 23:01:54.792 |200|     1.7829ms| 192.168.31.154|GET     "/douyin/feed/"
+
+2023-06-26 23:01:54.796	info	[GIN] 2023/06/26 - 23:01:54.795 |200|      694.8µs| 192.168.31.154|GET     "/douyin/publish/list/"
+
+2023-06-26 23:02:01.583	info	[GIN] 2023/06/26 - 23:02:01.577 |200|     6.4408ms| 192.168.31.154|GET     "/douyin/comment/list/"
+
+2023-06-26 23:02:06.148	info	FollowAction callers	{"request header=": {"Accept-Encoding":["gzip"],"Connection":["Keep-Alive"],"Content-Length":["0"],"User-Agent":["okhttp/3.14.9"]}}
+2023-06-26 23:02:06.154	info	[GIN] 2023/06/26 - 23:02:06.148 |200|     6.2268ms| 192.168.31.154|POST    "/douyin/relation/action/"
+
+2023-06-26 23:02:15.905	info	application will be shutdown
+2023-06-27 23:06:35.771	info	init_logg successful
+2023-06-27 23:06:35.800	info	Init_Mysql successful
+2023-06-27 23:06:35.800	info	Init_TikTokk successful
+2023-06-27 23:06:35.800	info	TikTokInit Successful
+2023-06-27 23:06:50.518	info	[GIN] 2023/06/27 - 23:06:50.518 |404|      600.5µs| 192.168.31.154|GET     "/douyin/relation/friend/list/"
+
+2023-06-27 23:06:50.529	info	[GIN] 2023/06/27 - 23:06:50.522 |200|     7.6459ms| 192.168.31.154|GET     "/douyin/feed/"
+
+2023-06-27 23:06:50.681	info	[GIN] 2023/06/27 - 23:06:50.680 |404|      744.4µs| 192.168.31.154|GET     "/douyin/publish/list/"
+
+2023-06-27 23:06:50.682	info	[GIN] 2023/06/27 - 23:06:50.681 |404|      507.4µs| 192.168.31.154|GET     "/douyin/favorite/list/"
+
+2023-06-27 23:06:50.693	info	[GIN] 2023/06/27 - 23:06:50.692 |200|     1.5921ms| 192.168.31.154|GET     "/douyin/feed/"
+
+2023-06-27 23:06:50.785	info	[GIN] 2023/06/27 - 23:06:50.785 |404|       89.5µs| 192.168.31.154|GET     "/douyin/favorite/list/"
+
+2023-06-27 23:06:50.785	info	[GIN] 2023/06/27 - 23:06:50.785 |404|       89.5µs| 192.168.31.154|GET     "/douyin/publish/list/"
+
+2023-06-27 23:06:50.789	info	[GIN] 2023/06/27 - 23:06:50.788 |200|        997µs| 192.168.31.154|GET     "/douyin/feed/"
+
+2023-06-27 23:06:54.309	info	[GIN] 2023/06/27 - 23:06:54.309 |404|           0s| 192.168.31.154|GET     "/douyin/relation/friend/list/"
+
+2023-06-27 23:06:54.312	info	[GIN] 2023/06/27 - 23:06:54.311 |200|      781.3µs| 192.168.31.154|GET     "/douyin/feed/"
+
+2023-06-27 23:06:54.502	info	[GIN] 2023/06/27 - 23:06:54.502 |404|           0s| 192.168.31.154|GET     "/douyin/publish/list/"
+
+2023-06-27 23:06:54.509	info	[GIN] 2023/06/27 - 23:06:54.509 |404|      546.7µs| 192.168.31.154|GET     "/douyin/favorite/list/"
+
+2023-06-27 23:06:54.509	info	[GIN] 2023/06/27 - 23:06:54.508 |200|     1.6913ms| 192.168.31.154|GET     "/douyin/feed/"
+
+2023-06-27 23:06:54.716	info	[GIN] 2023/06/27 - 23:06:54.716 |404|      388.7µs| 192.168.31.154|GET     "/douyin/favorite/list/"
+
+2023-06-27 23:06:54.718	info	[GIN] 2023/06/27 - 23:06:54.717 |404|      366.7µs| 192.168.31.154|GET     "/douyin/publish/list/"
+
+2023-06-27 23:06:54.722	info	[GIN] 2023/06/27 - 23:06:54.720 |200|     1.8653ms| 192.168.31.154|GET     "/douyin/feed/"
+
+2023-06-27 23:06:58.089	info	[GIN] 2023/06/27 - 23:06:58.088 |404|     1.1241ms| 192.168.31.154|GET     "/douyin/favorite/list/"
+
+2023-06-27 23:06:58.089	info	[GIN] 2023/06/27 - 23:06:58.088 |404|     1.1241ms| 192.168.31.154|GET     "/douyin/publish/list/"
+
+2023-06-27 23:07:05.621	info	application will be shutdown
+2023-06-27 23:07:24.918	info	init_logg successful
+2023-06-27 23:07:24.932	info	Init_Mysql successful
+2023-06-27 23:07:24.932	info	Init_TikTokk successful
+2023-06-27 23:07:24.932	info	TikTokInit Successful
+2023-06-27 23:07:29.284	info	[GIN] 2023/06/27 - 23:07:29.283 |404|      565.2µs| 192.168.31.154|GET     "/douyin/relation/friend/list/"
+
+2023-06-27 23:07:29.294	info	[GIN] 2023/06/27 - 23:07:29.289 |200|     5.2924ms| 192.168.31.154|GET     "/douyin/feed/"
+
+2023-06-27 23:07:29.470	info	[GIN] 2023/06/27 - 23:07:29.469 |404|      591.5µs| 192.168.31.154|GET     "/douyin/publish/list/"
+
+2023-06-27 23:07:29.476	info	[GIN] 2023/06/27 - 23:07:29.474 |200|     2.0358ms| 192.168.31.154|GET     "/douyin/feed/"
+
+2023-06-27 23:07:29.477	info	[GIN] 2023/06/27 - 23:07:29.476 |404|        516µs| 192.168.31.154|GET     "/douyin/favorite/list/"
+
+2023-06-27 23:07:29.717	info	[GIN] 2023/06/27 - 23:07:29.716 |404|      949.7µs| 192.168.31.154|GET     "/douyin/publish/list/"
+
+2023-06-27 23:07:29.718	info	[GIN] 2023/06/27 - 23:07:29.717 |404|      571.7µs| 192.168.31.154|GET     "/douyin/favorite/list/"
+
+2023-06-27 23:07:29.724	info	[GIN] 2023/06/27 - 23:07:29.722 |200|     2.1293ms| 192.168.31.154|GET     "/douyin/feed/"
+
+2023-06-27 23:07:30.798	info	[GIN] 2023/06/27 - 23:07:30.797 |404|      299.2µs| 192.168.31.154|GET     "/douyin/publish/list/"
+
+2023-06-27 23:07:30.798	info	[GIN] 2023/06/27 - 23:07:30.797 |404|      299.2µs| 192.168.31.154|GET     "/douyin/favorite/list/"
+
+2023-06-27 23:07:51.546	info	[GIN] 2023/06/27 - 23:07:51.544 |200|     1.6063ms| 192.168.31.154|GET     "/douyin/feed/"
+
+2023-06-27 23:07:51.611	info	[GIN] 2023/06/27 - 23:07:51.611 |404|           0s| 192.168.31.154|GET     "/douyin/favorite/list/"
+
+2023-06-27 23:07:51.611	info	[GIN] 2023/06/27 - 23:07:51.611 |404|           0s| 192.168.31.154|GET     "/douyin/publish/list/"
+
+2023-06-27 23:07:51.612	info	[GIN] 2023/06/27 - 23:07:51.612 |404|           0s| 192.168.31.154|GET     "/douyin/favorite/list/"
+
+2023-06-27 23:07:51.618	info	[GIN] 2023/06/27 - 23:07:51.618 |404|           0s| 192.168.31.154|GET     "/douyin/publish/list/"
+
+2023-06-27 23:07:51.620	info	[GIN] 2023/06/27 - 23:07:51.618 |200|     1.4178ms| 192.168.31.154|GET     "/douyin/feed/"
+
+2023-06-27 23:07:51.691	info	[GIN] 2023/06/27 - 23:07:51.691 |404|           0s| 192.168.31.154|GET     "/douyin/favorite/list/"
+
+2023-06-27 23:07:51.691	info	[GIN] 2023/06/27 - 23:07:51.691 |404|           0s| 192.168.31.154|GET     "/douyin/publish/list/"
+
+2023-06-27 23:07:51.695	info	[GIN] 2023/06/27 - 23:07:51.695 |404|           0s| 192.168.31.154|GET     "/douyin/favorite/list/"
+
+2023-06-27 23:07:51.695	info	[GIN] 2023/06/27 - 23:07:51.695 |404|           0s| 192.168.31.154|GET     "/douyin/publish/list/"
+
+2023-06-27 23:07:51.699	info	[GIN] 2023/06/27 - 23:07:51.697 |200|     1.5096ms| 192.168.31.154|GET     "/douyin/feed/"
+
+2023-06-27 23:08:04.949	info	[GIN] 2023/06/27 - 23:08:04.948 |400|      399.7µs| 192.168.31.154|POST    "/douyin/user/login/"
+
+2023-06-27 23:08:09.450	info	[GIN] 2023/06/27 - 23:08:09.449 |400|      812.4µs| 192.168.31.154|POST    "/douyin/user/login/"
+
+2023-06-27 23:08:17.935	info	[GIN] 2023/06/27 - 23:08:17.934 |400|        913µs| 192.168.31.154|POST    "/douyin/user/login/"
+
+2023-06-27 23:09:30.374	info	[GIN] 2023/06/27 - 23:09:30.374 |400|      253.6µs|  192.168.31.30|POST    "/douyin/user/login/"
+
+2023-06-27 23:10:09.917	info	application will be shutdown
+2023-06-27 23:10:13.947	info	init_logg successful
+2023-06-27 23:10:13.959	info	Init_Mysql successful
+2023-06-27 23:10:13.960	info	Init_TikTokk successful
+2023-06-27 23:10:13.960	info	TikTokInit Successful
+2023-06-27 23:10:15.527	info	[GIN] 2023/06/27 - 23:10:15.527 |200|           0s|  192.168.31.30|POST    "/douyin/user/login/"
+
+2023-06-27 23:11:26.128	info	application will be shutdown
+2023-06-27 23:11:30.107	info	init_logg successful
+2023-06-27 23:11:30.116	info	Init_Mysql successful
+2023-06-27 23:11:30.116	info	Init_TikTokk successful
+2023-06-27 23:11:30.116	info	TikTokInit Successful
+2023-06-27 23:11:31.590	info	[GIN] 2023/06/27 - 23:11:31.589 |200|      507.2µs|  192.168.31.30|POST    "/douyin/user/login/"
+
+2023-06-27 23:12:35.468	info	application will be shutdown
+2023-06-27 23:12:39.654	info	init_logg successful
+2023-06-27 23:12:39.664	info	Init_Mysql successful
+2023-06-27 23:12:39.664	info	Init_TikTokk successful
+2023-06-27 23:12:39.665	info	TikTokInit Successful
+2023-06-27 23:12:43.164	info	[GIN] 2023/06/27 - 23:12:43.164 |200|           0s|  192.168.31.30|POST    "/douyin/user/login/"
+
+2023-06-27 23:12:50.969	info	application will be shutdown
+2023-06-27 23:12:54.900	info	init_logg successful
+2023-06-27 23:12:54.910	info	Init_Mysql successful
+2023-06-27 23:12:54.910	info	Init_TikTokk successful
+2023-06-27 23:12:54.910	info	TikTokInit Successful
+2023-06-27 23:12:55.680	info	[GIN] 2023/06/27 - 23:12:55.680 |200|      699.3µs|  192.168.31.30|POST    "/douyin/user/login/"
+
+2023-06-27 23:13:09.217	info	[GIN] 2023/06/27 - 23:13:09.217 |200|           0s|  192.168.31.30|POST    "/douyin/user/login/"
+
+2023-06-27 23:13:27.774	info	[GIN] 2023/06/27 - 23:13:27.774 |200|      197.7µs|  192.168.31.30|POST    "/douyin/user/login/"
+
+2023-06-27 23:13:49.822	info	[GIN] 2023/06/27 - 23:13:49.822 |200|      220.9µs|  192.168.31.30|POST    "/douyin/user/login/"
+
+2023-06-27 23:13:55.772	info	application will be shutdown
+2023-06-27 23:13:57.194	info	init_logg successful
+2023-06-27 23:13:57.203	info	Init_Mysql successful
+2023-06-27 23:13:57.203	info	Init_TikTokk successful
+2023-06-27 23:13:57.203	info	TikTokInit Successful
+2023-06-27 23:14:01.110	info	[GIN] 2023/06/27 - 23:14:01.109 |200|      359.3µs|  192.168.31.30|POST    "/douyin/user/login/"
+
+2023-06-27 23:14:31.921	info	application will be shutdown
+2023-06-27 23:14:35.659	info	init_logg successful
+2023-06-27 23:14:35.669	info	Init_Mysql successful
+2023-06-27 23:14:35.669	info	Init_TikTokk successful
+2023-06-27 23:14:35.669	info	TikTokInit Successful
+2023-06-27 23:14:36.599	info	[GIN] 2023/06/27 - 23:14:36.598 |400|      937.1µs|  192.168.31.30|POST    "/douyin/user/login/"
+
+2023-06-27 23:15:04.575	info	application will be shutdown
+2023-06-27 23:15:08.216	info	init_logg successful
+2023-06-27 23:15:08.227	info	Init_Mysql successful
+2023-06-27 23:15:08.227	info	Init_TikTokk successful
+2023-06-27 23:15:08.227	info	TikTokInit Successful
+2023-06-27 23:15:15.420	info	[GIN] 2023/06/27 - 23:15:15.419 |400|        295µs|  192.168.31.30|POST    "/douyin/user/login/"
+
+2023-06-27 23:16:16.811	info	application will be shutdown
+2023-06-27 23:16:20.871	info	init_logg successful
+2023-06-27 23:16:20.881	info	Init_Mysql successful
+2023-06-27 23:16:20.881	info	Init_TikTokk successful
+2023-06-27 23:16:20.881	info	TikTokInit Successful
+2023-06-27 23:16:22.318	info	[GIN] 2023/06/27 - 23:16:22.318 |400|      497.2µs|  192.168.31.30|POST    "/douyin/user/login/"
+
+2023-06-27 23:17:27.307	info	application will be shutdown
+2023-06-27 23:17:31.530	info	init_logg successful
+2023-06-27 23:17:31.540	info	Init_Mysql successful
+2023-06-27 23:17:31.540	info	Init_TikTokk successful
+2023-06-27 23:17:31.540	info	TikTokInit Successful
+2023-06-27 23:17:32.598	info	[GIN] 2023/06/27 - 23:17:32.594 |200|     3.6315ms|  192.168.31.30|POST    "/douyin/user/login/"
+
+2023-06-27 23:19:33.264	info	application will be shutdown
+2023-06-27 23:27:11.711	info	init_logg successful
+2023-06-27 23:27:11.722	info	Init_Mysql successful
+2023-06-27 23:27:11.722	info	Init_TikTokk successful
+2023-06-27 23:27:11.722	info	TikTokInit Successful
+2023-06-27 23:27:14.426	info	[GIN] 2023/06/27 - 23:27:14.420 |200|     5.5517ms| 192.168.31.154|POST    "/douyin/user/login/"
+
+2023-06-27 23:27:14.463	info	[GIN] 2023/06/27 - 23:27:14.458 |200|     4.5739ms| 192.168.31.154|GET     "/douyin/user/"
+
+2023-06-27 23:27:14.580	info	[GIN] 2023/06/27 - 23:27:14.575 |200|     5.0418ms| 192.168.31.154|GET     "/douyin/favorite/list/"
+
+2023-06-27 23:29:23.703	info	application will be shutdown
+2023-06-27 23:29:27.358	info	init_logg successful
+2023-06-27 23:29:27.367	info	Init_Mysql successful
+2023-06-27 23:29:27.368	info	Init_TikTokk successful
+2023-06-27 23:29:27.368	info	TikTokInit Successful
+2023-06-27 23:29:30.324	info	[GIN] 2023/06/27 - 23:29:30.321 |200|     3.2449ms| 192.168.31.154|GET     "/douyin/feed/"
+
+2023-06-27 23:29:30.325	info	[GIN] 2023/06/27 - 23:29:30.319 |200|     5.7976ms| 192.168.31.154|GET     "/douyin/relation/friend/list/"
+
+2023-06-27 23:29:30.524	info	[GIN] 2023/06/27 - 23:29:30.522 |200|     1.7058ms| 192.168.31.154|GET     "/douyin/favorite/list/"
+
+2023-06-27 23:29:30.527	info	[GIN] 2023/06/27 - 23:29:30.526 |200|      559.3µs| 192.168.31.154|GET     "/douyin/feed/"
+
+2023-06-27 23:29:30.532	info	[GIN] 2023/06/27 - 23:29:30.529 |200|     2.7438ms| 192.168.31.154|GET     "/douyin/publish/list/"
+
+2023-06-27 23:29:33.424	info	[GIN] 2023/06/27 - 23:29:33.422 |200|     2.0478ms| 192.168.31.154|GET     "/douyin/favorite/list/"
+
+2023-06-27 23:29:33.425	info	[GIN] 2023/06/27 - 23:29:33.422 |200|     3.5114ms| 192.168.31.154|GET     "/douyin/publish/list/"
+
+2023-06-27 23:29:37.965	info	[GIN] 2023/06/27 - 23:29:37.963 |200|     2.1898ms| 192.168.31.154|GET     "/douyin/favorite/list/"
+
+2023-06-27 23:29:37.967	info	[GIN] 2023/06/27 - 23:29:37.963 |200|     4.1695ms| 192.168.31.154|GET     "/douyin/publish/list/"
+
+2023-06-27 23:29:44.558	info	[GIN] 2023/06/27 - 23:29:44.557 |200|     1.3755ms| 192.168.31.154|GET     "/douyin/feed/"
+
+2023-06-27 23:29:46.554	info	[GIN] 2023/06/27 - 23:29:46.544 |200|    10.3867ms| 192.168.31.154|POST    "/douyin/favorite/action/"
+
+2023-06-27 23:29:56.665	info	[GIN] 2023/06/27 - 23:29:56.662 |200|     2.4762ms| 192.168.31.154|GET     "/douyin/relation/follow/list/"
+
+2023-06-27 23:29:58.613	info	[GIN] 2023/06/27 - 23:29:58.611 |200|     1.8567ms| 192.168.31.154|GET     "/douyin/relation/follower/list/"
+
+2023-06-27 23:30:10.558	info	application will be shutdown

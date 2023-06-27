@@ -10,8 +10,8 @@ import (
 )
 
 type MessageBiz interface {
-	Action(ctx context.Context, name, content string, toUserID int) error
-	Chat(ctx context.Context, name string, toUserID int, preMsgTime int64) ([]api.MessageDetailRsp, error)
+	Action(ctx context.Context, name, content string, toUserID int64) error
+	Chat(ctx context.Context, name string, toUserID int64, preMsgTime int64) ([]api.MessageDetailRsp, error)
 }
 
 type BMessage struct {
@@ -24,7 +24,7 @@ func New(s store.DataStore) *BMessage {
 	return &BMessage{ds: s}
 }
 
-func (b BMessage) Action(ctx context.Context, name, content string, toUserID int) error {
+func (b BMessage) Action(ctx context.Context, name, content string, toUserID int64) error {
 	//获取发送人信息,并检验是否存在
 	u, err := b.ds.Users().Get(ctx, &model.User{Name: name})
 	if err != nil {
@@ -51,7 +51,7 @@ func (b BMessage) Action(ctx context.Context, name, content string, toUserID int
 	return nil
 }
 
-func (b BMessage) Chat(ctx context.Context, name string, toUserID int, preMsgTime int64) ([]api.MessageDetailRsp, error) {
+func (b BMessage) Chat(ctx context.Context, name string, toUserID int64, preMsgTime int64) ([]api.MessageDetailRsp, error) {
 	//获取列表
 	list, err := b.ds.Message().List(ctx, name, uint(toUserID), preMsgTime)
 	if err != nil {

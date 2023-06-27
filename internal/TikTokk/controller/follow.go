@@ -4,11 +4,8 @@ import (
 	"TikTokk/api"
 	"TikTokk/internal/TikTokk/biz"
 	"TikTokk/internal/TikTokk/store"
-	"TikTokk/internal/pkg/Tlog"
 	"TikTokk/internal/pkg/token"
-	"fmt"
 	"github.com/gin-gonic/gin"
-	"strconv"
 )
 
 type IRelation interface {
@@ -29,35 +26,24 @@ func NewCRelFollow(ds store.DataStore) *CRelation {
 }
 
 func (c *CRelation) FollowAction(ctx *gin.Context) {
-	//得到username、action_type、to_user_id
-	//得到操作类型
-	Tlog.Infow("FollowAction callers", "request header=", ctx.Request.Header)
-	fmt.Println("ctx.request.header=", ctx.Request.Header)
-	actionTypeStr := ctx.Query("action_type")
-	actionType, err := strconv.Atoi(actionTypeStr)
-	if err != nil {
-		ctx.JSON(200, api.FollowActionRsp{StatusCode: 1, StatusMsg: "actionType不合法"})
+	var req api.FollowActionReq
+	if err := ctx.BindQuery(&req); err != nil {
+		ctx.JSON(200, api.FollowActionRsp{StatusCode: 1, StatusMsg: "invalid filed"})
 		return
 	}
-	if actionType != 1 && actionType != 2 {
+	if req.ActionType != 1 && req.ActionType != 2 {
 		ctx.JSON(200, api.FollowActionRsp{StatusCode: 1, StatusMsg: "actionType未知"})
-		return
-	}
-	toUserIDStr := ctx.Query("to_user_id")
-	toUserID, err := strconv.Atoi(toUserIDStr)
-	if err != nil {
-		ctx.JSON(200, api.FollowActionRsp{StatusCode: 1, StatusMsg: "to_user_id不合法"})
 		return
 	}
 	username := ctx.GetString(token.Config.IdentityKey)
 	//biz
-	err = c.b.Follow().Action(ctx, username, uint(toUserID), uint(actionType))
+	err := c.b.Follow().Action(ctx, username, uint(req.ToUserID), uint(req.ActionType))
 	if err != nil {
 		ctx.JSON(200, api.FollowActionRsp{StatusCode: 1, StatusMsg: err.Error()})
 		return
 	}
 	//操作成功
-	if actionType == 1 {
+	if req.ActionType == 1 {
 		ctx.JSON(200, api.FollowActionRsp{StatusCode: 0, StatusMsg: "关注成功"})
 		return
 	}
@@ -67,15 +53,13 @@ func (c *CRelation) FollowAction(ctx *gin.Context) {
 }
 
 func (c *CRelation) FollowList(ctx *gin.Context) {
-	//得到user_id
-	userIDStr := ctx.Query("user_id")
-	userID, err := strconv.Atoi(userIDStr)
-	if err != nil {
-		ctx.JSON(200, api.FollowListRsp{StatusCode: 1, StatusMsg: "userID不合法"})
+	var req api.FollowListReq
+	if err := ctx.BindQuery(&req); err != nil {
+		ctx.JSON(200, api.FollowListRsp{StatusCode: 1, StatusMsg: "invalid filed"})
 		return
 	}
 	//biz
-	rsp, err := c.b.Follow().FollowList(ctx, uint(userID))
+	rsp, err := c.b.Follow().FollowList(ctx, uint(req.UserID))
 	if err != nil {
 		ctx.JSON(200, api.FollowListRsp{StatusCode: 1, StatusMsg: err.Error()})
 		return
@@ -87,15 +71,13 @@ func (c *CRelation) FollowList(ctx *gin.Context) {
 }
 
 func (c *CRelation) FollowerList(ctx *gin.Context) {
-	//得到user_id
-	userIDStr := ctx.Query("user_id")
-	userID, err := strconv.Atoi(userIDStr)
-	if err != nil {
-		ctx.JSON(200, api.FollowListRsp{StatusCode: 1, StatusMsg: "userID不合法"})
+	var req api.FollowerListReq
+	if err := ctx.BindQuery(&req); err != nil {
+		ctx.JSON(200, api.FollowerListRsp{StatusCode: 1, StatusMsg: "invalid filed"})
 		return
 	}
 	//biz
-	rsp, err := c.b.Follow().FollowerList(ctx, uint(userID))
+	rsp, err := c.b.Follow().FollowerList(ctx, uint(req.UserID))
 	if err != nil {
 		ctx.JSON(200, api.FollowListRsp{StatusCode: 1, StatusMsg: err.Error()})
 		return
@@ -107,15 +89,13 @@ func (c *CRelation) FollowerList(ctx *gin.Context) {
 }
 
 func (c *CRelation) FriendListList(ctx *gin.Context) {
-	//得到user_id
-	userIDStr := ctx.Query("user_id")
-	userID, err := strconv.Atoi(userIDStr)
-	if err != nil {
-		ctx.JSON(200, api.FriendListRsp{StatusCode: 0, StatusMsg: "userID不合法"})
+	var req api.FriendListReq
+	if err := ctx.BindQuery(&req); err != nil {
+		ctx.JSON(200, api.FriendListRsp{StatusCode: 1, StatusMsg: "invalid filed"})
 		return
 	}
 	//biz
-	rsp, err := c.b.Follow().FriendList(ctx, uint(userID))
+	rsp, err := c.b.Follow().FriendList(ctx, uint(req.UserID))
 	if err != nil {
 		ctx.JSON(200, api.FollowListRsp{StatusCode: 1, StatusMsg: err.Error()})
 		return
