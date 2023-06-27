@@ -43,7 +43,7 @@ func Run() {
 }
 
 func route() *gin.Engine {
-	gin.SetMode("release")
+	//gin.SetMode("release")
 	e := gin.New()
 	e.Use(gin.Recovery(), middleware.GinLogger())
 	//创建controller实例

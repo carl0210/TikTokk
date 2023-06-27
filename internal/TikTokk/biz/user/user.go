@@ -8,7 +8,6 @@ import (
 	"context"
 	"encoding/hex"
 	"fmt"
-	"strconv"
 )
 
 type UserBiz interface {
@@ -87,13 +86,7 @@ func (b *BUser) Register(ctx context.Context, req *api.RegisterUserRequest) (*ap
 }
 func (b *BUser) GetDetail(ctx context.Context, req *api.GetDetailUserRequest) (*api.GetDetailUserRespond, error) {
 	var rsp api.GetDetailUserRespond
-	//获取被查询用户具体信息
-	userID, err := strconv.Atoi(req.UserID)
-	if err != nil {
-		rsp.User.ID = -1
-		return &rsp, err
-	}
-	u, err := b.ds.Users().GetByID(ctx, uint(userID))
+	u, err := b.ds.Users().GetByID(ctx, uint(req.UserID))
 	if err != nil {
 		//不存在该用户则返回错误
 		rsp.User.ID = -1

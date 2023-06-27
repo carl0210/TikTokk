@@ -1,8 +1,10 @@
 package api
 
+import "mime/multipart"
+
 type VideoFeedListReq struct {
-	LatestTime string `json:"latest_time,omitempty"` // 可选参数，限制返回视频的最新投稿时间戳，精确到秒，不填表示当前时间
-	Token      string `json:"token,omitempty"`       // 用户登录状态下设置
+	LatestTime int64  `json:"latest_time,omitempty" form:"latest_time,omitempty"  binding:"numeric,gte=0"` // 可选参数，限制返回视频的最新投稿时间戳，精确到秒，不填表示当前时间
+	Token      string `json:"token,omitempty" form:"token,omitempty"`                                      // 用户登录状态下设置
 }
 
 type VideoFeedListRsp struct {
@@ -24,9 +26,20 @@ type VideoDetailRespond struct {
 	Title         string            `json:"title"`          // 视频标题
 }
 
+type VideoPublishActionReq struct {
+	File  *multipart.FileHeader `json:"file" form:"file" binding:"required"`
+	Token string                `json:"token,omitempty" form:"token,omitempty" binding:"required"`
+	Title string                `json:"title" form:"title" binding:"required"`
+}
+
 type VideoPublishActionRsp struct {
 	StatusCode int64  `json:"status_code"`
 	StatusMsg  string `json:"status_msg"`
+}
+
+type VideoPublishListReq struct {
+	Token  string `json:"token" form:"token" binding:"required"`                   // 用户鉴权token
+	UserID int64  `json:"user_id" form:"user_id" binding:"required,numeric,gte=0"` // 用户id
 }
 
 type VideoPublishListRsp struct {

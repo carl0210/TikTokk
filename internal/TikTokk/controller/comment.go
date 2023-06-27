@@ -6,7 +6,6 @@ import (
 	"TikTokk/internal/TikTokk/store"
 	"TikTokk/internal/pkg/token"
 	"github.com/gin-gonic/gin"
-	"strconv"
 )
 
 type IComment interface {
@@ -25,22 +24,16 @@ func NewCComment(s store.DataStore) *CComment {
 }
 
 func (c CComment) Action(ctx *gin.Context) {
-	opType := ctx.Query("action_type")
-	//得到必带的参数
-	videoIDStr := ctx.Query("video_id")
-	videoID, err := strconv.Atoi(videoIDStr)
-	if err != nil {
-		rsp := api.CommentActionRsp{StatusCode: 1, StatusMsg: "video_id incorrect"}
-		ctx.JSON(200, rsp)
+	var req api.CommentActionReq
+	if err := ctx.BindQuery(&req); err != nil {
+		ctx.JSON(200, api.CommentActionRsp{StatusCode: 1, StatusMsg: "invalid filed"})
 		return
 	}
 	username := ctx.GetString(token.Config.IdentityKey)
 	//对不同类型进行处理
-	if opType == "1" {
-		//获取参数comment_id
-		text := ctx.Query("comment_text")
+	if req.ActionType == "1" {
 		//biz
-		rsp, err := c.b.Comment().Create(ctx, uint(videoID), username, text)
+		rsp, err := c.b.Comment().Create(ctx, uint(req.VideoID), username, req.CommentText)
 		if err != nil {
 			ctx.JSON(200, api.CommentActionRsp{StatusCode: 1, StatusMsg: err.Error()})
 			return
@@ -51,24 +44,16 @@ func (c CComment) Action(ctx *gin.Context) {
 		ctx.JSON(200, rsp)
 		return
 
-	} else if opType == "2" {
-		//获取参数comment_id
-		commentIDStr := ctx.Query("comment_id")
-		commentID, err := strconv.Atoi(commentIDStr)
-		if err != nil {
-			ctx.JSON(200, api.CommentActionRsp{StatusCode: 1, StatusMsg: "comment_id不正确"})
-			return
-		}
+	} else if req.ActionType == "2" {
 		//biz
-		err = c.b.Comment().Delete(ctx, uint(commentID), uint(videoID), username)
+		err := c.b.Comment().Delete(ctx, uint(req.CommentID), uint(req.VideoID), username)
 		if err != nil {
 			rsp := api.CommentActionRsp{StatusCode: 1, StatusMsg: "comment_id不正确"}
 			ctx.JSON(200, rsp)
 			return
 		}
 		//删除成功
-		rsp := api.CommentActionRsp{StatusCode: 0, StatusMsg: "删除成功"}
-		ctx.JSON(200, rsp)
+		ctx.JSON(200, api.CommentActionRsp{StatusCode: 0, StatusMsg: "删除成功"})
 		return
 	} else {
 		//未知类型
@@ -80,16 +65,13 @@ func (c CComment) Action(ctx *gin.Context) {
 }
 
 func (c CComment) List(ctx *gin.Context) {
-	//得到video_id
-	videoIDStr := ctx.Query("video_id")
-	videoID, err := strconv.Atoi(videoIDStr)
-	if err != nil {
-		rsp := api.CommentListRsp{StatusCode: 1, StatusMsg: "video_id不正确"}
-		ctx.JSON(200, rsp)
+	var req api.CommentListReq
+	if err := ctx.BindQuery(&req); err != nil {
+		ctx.JSON(200, api.CommentListRsp{StatusCode: 1, StatusMsg: "invalid filed"})
 		return
 	}
 	//biz
-	rsp, err := c.b.Comment().List(ctx, uint(videoID))
+	rsp, err := c.b.Comment().List(ctx, uint(req.VideoID))
 	if err != nil {
 		rspE := api.CommentListRsp{StatusCode: 1, StatusMsg: err.Error()}
 		ctx.JSON(200, rspE)

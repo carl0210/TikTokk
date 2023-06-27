@@ -6,7 +6,6 @@ import (
 	"TikTokk/internal/TikTokk/store"
 	"TikTokk/internal/pkg/token"
 	"github.com/gin-gonic/gin"
-	"strconv"
 	"time"
 )
 
@@ -26,24 +25,15 @@ func NewCMessage(ds store.DataStore) *CMessage {
 }
 
 func (c *CMessage) Action(ctx *gin.Context) {
-	//验证action_type
-	actionType := ctx.Query("action_type")
-	if actionType != "1" {
-		ctx.JSON(200, api.MessageActionRsp{StatusCode: 1, StatusMsg: "action_type不正确"})
+	var req api.MessageActionReq
+	if err := ctx.BindQuery(&req); err != nil {
+		ctx.JSON(200, api.MessageActionRsp{StatusCode: 1, StatusMsg: "invalid filed"})
 		return
 	}
-	//从token中获取name,query参数中得到toUserID、content
+	//从token中获取name
 	name := ctx.GetString(token.Config.IdentityKey)
-	toUserIDStr := ctx.Query("to_user_id")
-	content := ctx.Query("content")
-	//转化toUserIDStr为整型
-	toUserID, err := strconv.Atoi(toUserIDStr)
-	if err != nil {
-		ctx.JSON(200, api.MessageActionRsp{StatusCode: 1, StatusMsg: err.Error()})
-		return
-	}
 	//biz
-	err = c.b.Message().Action(ctx, name, content, toUserID)
+	err := c.b.Message().Action(ctx, name, req.Content, req.ToUserID)
 	if err != nil {
 		ctx.JSON(200, api.MessageActionRsp{StatusCode: 1, StatusMsg: err.Error()})
 		return
@@ -53,26 +43,19 @@ func (c *CMessage) Action(ctx *gin.Context) {
 }
 
 func (c *CMessage) Chat(ctx *gin.Context) {
-	//得到name、to_user_id、pre_msg_time
+	var req api.MessageChatReq
+	if err := ctx.BindQuery(&req); err != nil {
+		ctx.JSON(200, api.MessageChatRsp{StatusCode: 1, StatusMsg: "invalid filed"})
+		return
+	}
+	//得到name
 	name := ctx.GetString(token.Config.IdentityKey)
-	toUserIDStr := ctx.Query("to_user_id")
-	preMsgTimeStr := ctx.Query("pre_msg_time")
-	//转化toUserID、preMsgTime
-	toUserID, err := strconv.Atoi(toUserIDStr)
-	if err != nil {
-		ctx.JSON(200, api.MessageChatRsp{StatusCode: 1, StatusMsg: err.Error()})
-		return
-	}
-	preMsgTime, err := strconv.ParseInt(preMsgTimeStr, 10, 64)
-	if err != nil {
-		ctx.JSON(200, api.MessageChatRsp{StatusCode: 1, StatusMsg: err.Error()})
-		return
-	}
-	if preMsgTime == 0 {
-		preMsgTime = time.Now().Add(-time.Hour).Unix()
+
+	if req.PreMsgTime == 0 {
+		req.PreMsgTime = time.Now().Add(-time.Hour).Unix()
 	}
 	//biz
-	l, err := c.b.Message().Chat(ctx, name, toUserID, preMsgTime)
+	l, err := c.b.Message().Chat(ctx, name, req.ToUserID, req.PreMsgTime)
 	if err != nil {
 		ctx.JSON(200, api.MessageChatRsp{StatusCode: 1, StatusMsg: err.Error()})
 		return

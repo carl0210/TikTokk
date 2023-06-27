@@ -1,8 +1,8 @@
 package api
 
 type RegisterUserRequest struct {
-	Password string `json:"password"` // 密码，最长32个字符
-	Username string `json:"username"` // 注册用户名，最长32个字符
+	Password string `json:"password" form:"password" binding:"required,min=6"` // 密码，最长32个字符
+	Username string `json:"username" form:"username" binding:"required"`       // 注册用户名，最长32个字符
 }
 
 type RegisterUserRespond struct {
@@ -13,8 +13,8 @@ type RegisterUserRespond struct {
 }
 
 type LoginUserRequest struct {
-	Password string `json:"password"` // 登录密码
-	Username string `json:"username"` // 登录用户名
+	Password string `json:"password" form:"password" binding:"required,min=6"` // 登录密码
+	Username string `json:"username" form:"username" binding:"required"`       // 登录用户名
 }
 
 type LoginUserRespond struct {
@@ -25,8 +25,8 @@ type LoginUserRespond struct {
 }
 
 type GetDetailUserRequest struct {
-	Token  string `json:"token"`   // 用户鉴权token
-	UserID string `json:"user_id"` // 用户id
+	Token  string `json:"token" form:"token" binding:"required"`                   // 用户鉴权token
+	UserID int64  `json:"user_id" form:"user_id" binding:"required,numeric,gte=0"` // 用户id
 }
 type GetDetailUserRespond struct {
 	StatusCode int64             `json:"status_code"` // 状态码，0-成功，其他值-失败

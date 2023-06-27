@@ -6,7 +6,7 @@ import (
 	"TikTokk/internal/TikTokk/store"
 	"TikTokk/internal/pkg/token"
 	"github.com/gin-gonic/gin"
-	"strconv"
+	"github.com/gin-gonic/gin/binding"
 	"time"
 )
 
@@ -27,34 +27,29 @@ func NewCVideo(s store.DataStore) *CVideo {
 }
 
 func (c *CVideo) Feed(ctx *gin.Context) {
+	var req api.VideoFeedListReq
+	if err := ctx.BindQuery(&req); err != nil {
+		ctx.JSON(200, api.VideoFeedListRsp{StatusCode: 1, StatusMsg: "invalid filed"})
+		return
+	}
 	//获取token中的用户名
 	var name string
-	t := ctx.Query("t")
+	t := ctx.Query("token")
 	if len(t) != 0 {
 		name, _ = token.Parse(t, token.Config.IdentityKey)
 	} else {
 		name = ""
 	}
 
-	//获取latest_time
-	var latestTime time.Time
-	latestTimeStr := ctx.Query("latest_time")
 	//如果未传入,则为当前时间
-	if latestTimeStr == "" {
-		latestTime = time.Now()
-	} else {
-		lTime, err := strconv.Atoi(latestTimeStr)
-		if err != nil {
-			ctx.JSON(200, api.VideoFeedListRsp{StatusCode: 1, StatusMsg: err.Error(), NextTime: time.Now().Unix()})
-			return
-		}
-		latestTime = time.Unix(int64(lTime), 0)
+	if req.LatestTime == 0 {
+		req.LatestTime = time.Now().Unix()
 	}
 	//如果latest_time比当前时间大则代表不合法
-	if !latestTime.Before(time.Now()) {
-		latestTime = time.Now()
+	if req.LatestTime > time.Now().Unix() {
+		req.LatestTime = time.Now().Unix()
 	}
-	rsp, err := c.b.Videos().GetVideoFeedList(ctx, name, latestTime)
+	rsp, err := c.b.Videos().GetVideoFeedList(ctx, name, req.LatestTime)
 	if err != nil {
 		rsp.StatusMsg = err.Error()
 		rsp.StatusCode = 1
@@ -68,40 +63,29 @@ func (c *CVideo) Feed(ctx *gin.Context) {
 }
 
 func (c *CVideo) PublishAction(ctx *gin.Context) {
-	var rsp api.VideoPublishActionRsp
-	file, err := ctx.FormFile("data")
-	if err != nil {
-		rsp.StatusMsg = err.Error()
-		rsp.StatusCode = 1
-		ctx.JSON(200, rsp)
+	var req api.VideoPublishActionReq
+	if err := ctx.BindWith(&req, binding.Form); err != nil {
+		ctx.JSON(200, api.VideoPublishActionRsp{StatusCode: 1, StatusMsg: "invalid filed"})
 		return
 	}
-	title := ctx.PostForm("title")
 	username := ctx.GetString(token.Config.IdentityKey)
-	err = c.b.Videos().PublishAction(ctx, file, title, username)
+	err := c.b.Videos().PublishAction(ctx, req.File, req.Title, username)
 	if err != nil {
-		rsp.StatusMsg = err.Error()
-		rsp.StatusCode = 1
-		ctx.JSON(200, rsp)
+		ctx.JSON(200, api.VideoPublishActionRsp{StatusCode: 1, StatusMsg: err.Error()})
 		return
 	}
-	rsp.StatusCode = 0
-	rsp.StatusMsg = "上传成功"
-	ctx.JSON(200, rsp)
+	ctx.JSON(200, api.VideoPublishActionRsp{StatusCode: 0, StatusMsg: "上传成功"})
 	return
 
 }
 
 func (c *CVideo) PublishList(ctx *gin.Context) {
-	userIDStr := ctx.Query("user_id")
-	userID, err := strconv.Atoi(userIDStr)
-	//如果用户ID不正确
-	if err != nil || 0 > userID {
-		rsp := api.VideoPublishListRsp{VideoList: nil, StatusCode: 1, StatusMsg: "用户ID不正确"}
-		ctx.JSON(200, rsp)
+	var req api.VideoPublishListReq
+	if err := ctx.BindQuery(&req); err != nil {
+		ctx.JSON(200, api.VideoPublishListRsp{StatusCode: 1, StatusMsg: "invalid filed"})
 		return
 	}
-	rsp, err := c.b.Videos().PublishList(ctx, userID)
+	rsp, err := c.b.Videos().PublishList(ctx, int(req.UserID))
 	if err != nil {
 		rsp := api.VideoPublishListRsp{VideoList: nil, StatusCode: 1, StatusMsg: err.Error()}
 		ctx.JSON(200, rsp)

@@ -14,7 +14,7 @@ import (
 )
 
 type VideoBiz interface {
-	GetVideoFeedList(ctx context.Context, username string, latestTime time.Time) (rsp *api.VideoFeedListRsp, err error)
+	GetVideoFeedList(ctx context.Context, username string, latestTime int64) (rsp *api.VideoFeedListRsp, err error)
 	PublishAction(ctx *gin.Context, file *multipart.FileHeader, title, username string) error
 	PublishList(ctx context.Context, userID int) (*api.VideoPublishListRsp, error)
 }
@@ -29,11 +29,11 @@ func New(s store.DataStore) *BVideo {
 	return &BVideo{ds: s}
 }
 
-func (b *BVideo) GetVideoFeedList(ctx context.Context, username string, latestTime time.Time) (*api.VideoFeedListRsp, error) {
+func (b *BVideo) GetVideoFeedList(ctx context.Context, username string, latestTime int64) (*api.VideoFeedListRsp, error) {
 	//获取限制返回视频的最新投稿时间
 	//获取视频
 	FeedLen := FeedLen
-	list, err := b.ds.Videos().Feed(ctx, FeedLen, latestTime)
+	list, err := b.ds.Videos().Feed(ctx, FeedLen, time.Unix(latestTime, 0))
 	if err != nil {
 		return &api.VideoFeedListRsp{}, err
 	}
@@ -86,12 +86,12 @@ func (b *BVideo) GetVideoFeedList(ctx context.Context, username string, latestTi
 			videoList[i].Author.IsFollow = relFollow.IsFollow
 		}
 		//获取该切片视频中最早时间
-		if v.UpdatedAt.Before(NextTime) {
-			NextTime = v.UpdatedAt
+		if v.UpdatedAt.Unix() < NextTime {
+			NextTime = v.UpdatedAt.Unix()
 		}
 
 	}
-	return &api.VideoFeedListRsp{VideoList: videoList, NextTime: NextTime.Unix()}, nil
+	return &api.VideoFeedListRsp{VideoList: videoList, NextTime: NextTime}, nil
 }
 
 func (b *BVideo) PublishAction(ctx *gin.Context, file *multipart.FileHeader, title, username string) error {
