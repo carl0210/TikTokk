@@ -1,32 +1,53 @@
 version: '3'
-services:
-  mysql-test:
-    image: registry.cn-hangzhou.aliyuncs.com/bigdata_cloudnative/mysql-test:5.7
-    restart: always
-    container_name: mysql-test
-    hostname: mysql-test
-    environment:
-      MYSQL_ROOT_PASSWORD: 123456
-      TZ: Asia/Shanghai
-    ports:
-      - 3306:3306
-    volumes:
-      - ./data:/var/lib/mysql
-      - ./conf/my.cnf:/etc/mysql/my.cnf
-    command:
-      --max_connections=1000
-      --character-set-server=utf8mb4
-      --collation-server=utf8mb4_general_ci
-      --default-authentication-plugin=mysql_native_password
-    networks:
-      - hadoop-network
-    healthcheck:
-      test: ["CMD-SHELL", "curl --silent localhost:3306 >/dev/null || exit 1"]
-      interval: 10s
-      timeout: 10s
-      retries: 3
 
-# 连接外部网络
-networks:
-  hadoop-network:
-    external: true
+services:
+  master:
+    image: mysql:latest
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: mypassword
+      MYSQL_ROOT_HOST: '%'
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'no'
+      MYSQL_DATABASE: tiktokk
+      MYSQL_REQUIRE_SECURE_TRANSPORT: '1'
+      MYSQL_SERVER_ID: 1
+
+    ports:
+      - "3307:3306"
+    volumes:
+      - ./data/master:/var/lib/mysql
+    command: --server-id=1 --log-bin --binlog-do-db=TikTokk
+
+  slave1:
+    image: mysql:latest
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: mypassword
+      MYSQL_ROOT_HOST: '%'
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'no'
+      MYSQL_DATABASE: tiktokk
+      MYSQL_REQUIRE_SECURE_TRANSPORT: '1'
+      MYSQL_SERVER_ID: 2
+
+    ports:
+      - "3308:3306"
+    volumes:
+      - ./data/slave1:/var/lib/mysql
+    command: --server-id=2 --log-bin --binlog-do-db=tiktokk --relay-log --relay-log-index=slave-relay-bin.index --relay-log-info-repository=TABLE
+
+  slave2:
+    image: mysql:latest
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: mypassword
+      MYSQL_ROOT_HOST: '%'
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'no'
+      MYSQL_DATABASE: tiktokk
+      MYSQL_REQUIRE_SECURE_TRANSPORT: '1'
+      MYSQL_SERVER_ID: 3
+
+    ports:
+      - "3309:3306"
+    volumes:
+      - ./data/slave2:/var/lib/mysql
+    command: --server-id=3 --log-bin --binlog-do-db=tiktokk --relay-log --relay-log-index=slave-relay-bin.index --relay-log-info-repository=TABLE

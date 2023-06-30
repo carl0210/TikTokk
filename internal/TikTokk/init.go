@@ -2,14 +2,17 @@ package TikTokk
 
 import (
 	"TikTokk/internal/TikTokk/biz/video"
+	"TikTokk/internal/TikTokk/model"
 	"TikTokk/internal/TikTokk/store"
 	"TikTokk/internal/pkg/Tlog"
 	"TikTokk/internal/pkg/token"
+	"context"
 	"fmt"
 	"github.com/spf13/viper"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
+	"gorm.io/plugin/dbresolver"
 	"log"
 	"os"
 	"sync"
@@ -44,33 +47,55 @@ func Config() {
 }
 
 func Mysql() {
+	master := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?%s",
+		viper.GetString("mysql-master.user"),
+		viper.GetString("mysql-master.password"),
+		viper.GetString("mysql-master.ip"),
+		viper.GetInt("mysql-master.port"),
+		viper.GetString("mysql-master.database"),
+		viper.GetString("mysql-master.config"),
+	)
+	slave1 := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?%s",
+		viper.GetString("mysql-slave-1.user"),
+		viper.GetString("mysql-slave-1.password"),
+		viper.GetString("mysql-slave-1.ip"),
+		viper.GetInt("mysql-slave-1.port"),
+		viper.GetString("mysql-slave-1.database"),
+		viper.GetString("mysql-slave-1.config"),
+	)
+	slave2 := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?%s",
+		viper.GetString("mysql-slave-2.user"),
+		viper.GetString("mysql-slave-2.password"),
+		viper.GetString("mysql-slave-2.ip"),
+		viper.GetInt("mysql-slave-2.port"),
+		viper.GetString("mysql-slave-2.database"),
+		viper.GetString("mysql-slave-2.config"),
+	)
 	log := logger.New(
 		log.New(os.Stdout, "\r\n", log.LstdFlags),
 		logger.Config{
-			LogLevel:      logger.LogLevel(viper.GetInt("mysql.Tlog-level")),
-			SlowThreshold: time.Second,
-			Colorful:      true,
+			IgnoreRecordNotFoundError: true, // Ignore ErrRecordNotFound error for logger
+			ParameterizedQueries:      true, // Don't include params in the SQL log
+			LogLevel:                  logger.LogLevel(viper.GetInt("mysql.log-level")),
+			SlowThreshold:             time.Second,
+			Colorful:                  true,
 		})
 
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?%s",
-		viper.GetString("mysql.user"),
-		viper.GetString("mysql.password"),
-		viper.GetString("mysql.ip"),
-		viper.GetInt("mysql.port"),
-		viper.GetString("mysql.database"),
-		viper.GetString("mysql.config"),
-	)
-
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
+	db, err := gorm.Open(mysql.Open(master), &gorm.Config{
 		Logger: log,
 	})
 	if err != nil {
 		Tlog.Panicw("Init_mysql error =", err.Error())
 		return
 	}
-	DB = db
 
-	Tlog.Infow("Init_Mysql successful")
+	db.Use(dbresolver.Register(dbresolver.Config{
+		Replicas: []gorm.Dialector{mysql.Open(slave1), mysql.Open(slave2)},
+		Policy:   dbresolver.RandomPolicy{},
+	}, &model.User{}, &model.UserFollowed{}, &model.Chat_Message{}, &model.Comment{}, &model.UserFavorite{}, &model.Video{}))
+
+	DB = db
+	log.Info(context.Background(), "Init_Mysql successful")
 }
 
 // TikTokk 初始化业务代码

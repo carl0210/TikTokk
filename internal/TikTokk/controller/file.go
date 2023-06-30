@@ -4,6 +4,7 @@ import (
 	"TikTokk/internal/TikTokk/biz"
 	"TikTokk/internal/TikTokk/store"
 	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
 type IFile interface {
@@ -29,16 +30,16 @@ func (C CFile) Uploads(ctx *gin.Context) {
 	//得到上传的文件
 	data, err := ctx.FormFile("data")
 	if err != nil {
-		ctx.JSON(200, UploadsRsp{StatusCode: 1, StatusMsg: "文件获取失败"})
+		ctx.JSON(http.StatusOK, UploadsRsp{StatusCode: 1, StatusMsg: "文件获取失败"})
 		return
 	}
 	//保存到当地
 	uploadsPath := "./asset/video/"
 	ctx.SaveUploadedFile(data, uploadsPath+data.Filename)
 	if err != nil {
-		ctx.JSON(200, UploadsRsp{StatusCode: 1, StatusMsg: "文件保存失败"})
+		ctx.JSON(http.StatusOK, UploadsRsp{StatusCode: 1, StatusMsg: "文件保存失败"})
 		return
 	}
-	ctx.JSON(200, UploadsRsp{StatusCode: 0, StatusMsg: "保存成功！"})
+	ctx.JSON(http.StatusOK, UploadsRsp{StatusCode: 0, StatusMsg: "保存成功！"})
 	return
 }

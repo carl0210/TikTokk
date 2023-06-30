@@ -24,7 +24,6 @@ func Parse(tokenString string, key string) (value string, err error) {
 		return []byte(key), nil
 	})
 	if err != nil {
-		fmt.Println(err)
 		return "", err
 	}
 
@@ -64,7 +63,6 @@ func Sign(identity string) string {
 	})
 	s, err := c.SignedString([]byte(Config.Key))
 	if err != nil {
-		fmt.Println(err)
 		return ""
 	}
 	return s

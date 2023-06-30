@@ -5,7 +5,9 @@ import (
 	"TikTokk/internal/TikTokk/biz"
 	"TikTokk/internal/TikTokk/store"
 	"TikTokk/internal/pkg/token"
+	"fmt"
 	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
 type IComment interface {
@@ -25,8 +27,9 @@ func NewCComment(s store.DataStore) *CComment {
 
 func (c CComment) Action(ctx *gin.Context) {
 	var req api.CommentActionReq
-	if err := ctx.BindQuery(&req); err != nil {
-		ctx.JSON(200, api.CommentActionRsp{StatusCode: 1, StatusMsg: "invalid filed"})
+	if err := ctx.ShouldBindQuery(&req); err != nil {
+		fmt.Println(err)
+		ctx.JSON(http.StatusOK, api.CommentActionRsp{StatusCode: 1, StatusMsg: "invalid field"})
 		return
 	}
 	username := ctx.GetString(token.Config.IdentityKey)
@@ -35,13 +38,13 @@ func (c CComment) Action(ctx *gin.Context) {
 		//biz
 		rsp, err := c.b.Comment().Create(ctx, uint(req.VideoID), username, req.CommentText)
 		if err != nil {
-			ctx.JSON(200, api.CommentActionRsp{StatusCode: 1, StatusMsg: err.Error()})
+			ctx.JSON(http.StatusOK, api.CommentActionRsp{StatusCode: 1, StatusMsg: err.Error()})
 			return
 		}
 		//创建成功
 		rsp.StatusCode = 0
 		rsp.StatusMsg = "创建成功"
-		ctx.JSON(200, rsp)
+		ctx.JSON(http.StatusOK, rsp)
 		return
 
 	} else if req.ActionType == "2" {
@@ -49,16 +52,16 @@ func (c CComment) Action(ctx *gin.Context) {
 		err := c.b.Comment().Delete(ctx, uint(req.CommentID), uint(req.VideoID), username)
 		if err != nil {
 			rsp := api.CommentActionRsp{StatusCode: 1, StatusMsg: "comment_id不正确"}
-			ctx.JSON(200, rsp)
+			ctx.JSON(http.StatusOK, rsp)
 			return
 		}
 		//删除成功
-		ctx.JSON(200, api.CommentActionRsp{StatusCode: 0, StatusMsg: "删除成功"})
+		ctx.JSON(http.StatusOK, api.CommentActionRsp{StatusCode: 0, StatusMsg: "删除成功"})
 		return
 	} else {
 		//未知类型
 		rsp := api.CommentActionRsp{StatusCode: 1, StatusMsg: "未知action_type"}
-		ctx.JSON(200, rsp)
+		ctx.JSON(http.StatusOK, rsp)
 		return
 	}
 	return
@@ -67,18 +70,18 @@ func (c CComment) Action(ctx *gin.Context) {
 func (c CComment) List(ctx *gin.Context) {
 	var req api.CommentListReq
 	if err := ctx.BindQuery(&req); err != nil {
-		ctx.JSON(200, api.CommentListRsp{StatusCode: 1, StatusMsg: "invalid filed"})
+		ctx.JSON(http.StatusOK, api.CommentListRsp{StatusCode: 1, StatusMsg: "invalid field"})
 		return
 	}
 	//biz
 	rsp, err := c.b.Comment().List(ctx, uint(req.VideoID))
 	if err != nil {
 		rspE := api.CommentListRsp{StatusCode: 1, StatusMsg: err.Error()}
-		ctx.JSON(200, rspE)
+		ctx.JSON(http.StatusOK, rspE)
 		return
 	}
 	rsp.StatusCode = 0
 	rsp.StatusMsg = "获取成功"
-	ctx.JSON(200, rsp)
+	ctx.JSON(http.StatusOK, rsp)
 	return
 }
