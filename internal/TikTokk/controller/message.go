@@ -6,6 +6,7 @@ import (
 	"TikTokk/internal/TikTokk/store"
 	"TikTokk/internal/pkg/token"
 	"github.com/gin-gonic/gin"
+	"net/http"
 	"time"
 )
 
@@ -27,7 +28,7 @@ func NewCMessage(ds store.DataStore) *CMessage {
 func (c *CMessage) Action(ctx *gin.Context) {
 	var req api.MessageActionReq
 	if err := ctx.BindQuery(&req); err != nil {
-		ctx.JSON(200, api.MessageActionRsp{StatusCode: 1, StatusMsg: "invalid filed"})
+		ctx.JSON(http.StatusOK, api.MessageActionRsp{StatusCode: 1, StatusMsg: "invalid field"})
 		return
 	}
 	//从token中获取name
@@ -35,17 +36,17 @@ func (c *CMessage) Action(ctx *gin.Context) {
 	//biz
 	err := c.b.Message().Action(ctx, name, req.Content, req.ToUserID)
 	if err != nil {
-		ctx.JSON(200, api.MessageActionRsp{StatusCode: 1, StatusMsg: err.Error()})
+		ctx.JSON(http.StatusOK, api.MessageActionRsp{StatusCode: 1, StatusMsg: err.Error()})
 		return
 	}
-	ctx.JSON(200, api.MessageActionRsp{StatusCode: 0, StatusMsg: "发送成功!"})
+	ctx.JSON(http.StatusOK, api.MessageActionRsp{StatusCode: 0, StatusMsg: "发送成功!"})
 	return
 }
 
 func (c *CMessage) Chat(ctx *gin.Context) {
 	var req api.MessageChatReq
 	if err := ctx.BindQuery(&req); err != nil {
-		ctx.JSON(200, api.MessageChatRsp{StatusCode: 1, StatusMsg: "invalid filed"})
+		ctx.JSON(http.StatusOK, api.MessageChatRsp{StatusCode: 1, StatusMsg: "invalid field"})
 		return
 	}
 	//得到name
@@ -57,9 +58,9 @@ func (c *CMessage) Chat(ctx *gin.Context) {
 	//biz
 	l, err := c.b.Message().Chat(ctx, name, req.ToUserID, req.PreMsgTime)
 	if err != nil {
-		ctx.JSON(200, api.MessageChatRsp{StatusCode: 1, StatusMsg: err.Error()})
+		ctx.JSON(http.StatusOK, api.MessageChatRsp{StatusCode: 1, StatusMsg: err.Error()})
 		return
 	}
-	ctx.JSON(200, api.MessageChatRsp{StatusCode: 0, StatusMsg: "获取成功", MessageList: l})
+	ctx.JSON(http.StatusOK, api.MessageChatRsp{StatusCode: 0, StatusMsg: "获取成功", MessageList: l})
 	return
 }

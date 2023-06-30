@@ -1,11 +1,31 @@
 mysql:
-  user: "root"
-  password: "156156qQ"
-  database: "tiktokk"
-  ip: "localhost"
-  port: 3306
   config: "charset=utf8mb4&parseTime=true&loc=Local"
   log-level: 4 # GORM Tlog level, 1: silent, 2:error, 3:warn, 4:info
+
+
+mysql-master:
+  user: "root"
+  password: "mypassword"
+  database: "tiktokk"
+  ip: "192.168.31.30"
+  port: 3307
+  config: "charset=utf8mb4&parseTime=true&loc=Local"
+
+mysql-slave-1:
+  user: "root"
+  password: "mypassword"
+  database: "tiktokk"
+  ip: "192.168.31.30"
+  port: 3308
+  config: "charset=utf8mb4&parseTime=true&loc=Local"
+
+mysql-slave-2:
+  user: "root"
+  password: "mypassword"
+  database: "tiktokk"
+  ip: "192.168.31.30"
+  port: 3309
+  config: "charset=utf8mb4&parseTime=true&loc=Local"
 
 jwt:
   key: "666"

@@ -27,7 +27,7 @@ type VideoDetailRespond struct {
 }
 
 type VideoPublishActionReq struct {
-	File  *multipart.FileHeader `json:"file" form:"file" binding:"required"`
+	Data  *multipart.FileHeader `json:"data" form:"data" binding:"required"`
 	Token string                `json:"token,omitempty" form:"token,omitempty" binding:"required"`
 	Title string                `json:"title" form:"title" binding:"required"`
 }
