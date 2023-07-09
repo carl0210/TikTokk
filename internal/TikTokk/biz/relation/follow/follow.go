@@ -10,7 +10,7 @@ import (
 )
 
 type FollowRelationBiz interface {
-	Action(ctx context.Context, uName string, toUserID, actionType uint) error
+	Action(ctx context.Context, userID, toUserID, actionType uint) error
 	FollowList(ctx context.Context, userID uint) (*api.FollowListRsp, error)
 	FollowerList(ctx context.Context, userID uint) (*api.FollowerListRsp, error)
 	FriendList(ctx context.Context, userID uint) (*api.FriendListRsp, error)
@@ -26,7 +26,7 @@ func New(db store.DataStore) *BFollowRelation {
 	return &BFollowRelation{ds: db}
 }
 
-func (b *BFollowRelation) Action(ctx context.Context, uName string, toUserID, actionType uint) error {
+func (b *BFollowRelation) Action(ctx context.Context, userID, toUserID, actionType uint) error {
 	//判断关注关系中点赞状态和操作类型代表的关注状态是否相同，不相同则修改，相同则不修改
 	//获取关注类型
 	var isFollow bool
@@ -39,16 +39,16 @@ func (b *BFollowRelation) Action(ctx context.Context, uName string, toUserID, ac
 		op = -1
 	}
 	//获取用户信息
-	u, err := b.ds.Users().GetByName(ctx, uName)
+	u, err := b.ds.Users().Get(ctx, &model.User{UserID: userID})
 	if err != nil {
 		return err
 	}
-	uTo, err := b.ds.Users().GetByID(ctx, toUserID)
+	uTo, err := b.ds.Users().Get(ctx, &model.User{UserID: toUserID})
 	if err != nil {
 		return err
 	}
 	//关注关系
-	rel, err := b.ds.UserFollowRelation().FirstOrCreate(ctx, u.UserId, uTo.UserId, u.Name, uTo.Name)
+	rel, err := b.ds.UserFollowRelation().FirstOrCreate(ctx, u.UserID, uTo.UserID, u.Name, uTo.Name)
 	if err != nil {
 		return err
 	}
@@ -59,7 +59,7 @@ func (b *BFollowRelation) Action(ctx context.Context, uName string, toUserID, ac
 			//修改关注关系
 			if err := tx.Model(&model.UserFollowed{}).
 				Where("user_id=? AND user_name=? AND to_user_id =? AND to_user_name=?",
-					u.UserId, u.Name, uTo.UserId, uTo.Name).Update("is_follow", isFollow).Error; err != nil {
+					u.UserID, u.Name, uTo.UserID, uTo.Name).Update("is_follow", isFollow).Error; err != nil {
 				return err
 			}
 			//用户关注数&粉丝数+1
@@ -84,12 +84,12 @@ func (b *BFollowRelation) FollowList(ctx context.Context, userID uint) (*api.Fol
 	var rsp api.FollowListRsp
 	//根据用户id查询关注列表
 	//查询用户关注数
-	u, err := b.ds.Users().GetByID(ctx, userID)
+	u, err := b.ds.Users().Get(ctx, &model.User{UserID: userID})
 	if err != nil {
 		return &rsp, err
 	}
 	//得到所有关注的用户
-	l, err := b.ds.UserFollowRelation().FollowList(ctx, int(u.FollowCount), u.UserId)
+	l, err := b.ds.UserFollowRelation().FollowList(ctx, int(u.FollowCount), u.UserID)
 	if err != nil {
 		return &rsp, err
 	}
@@ -115,7 +115,7 @@ func (b *BFollowRelation) FollowerList(ctx context.Context, userID uint) (*api.F
 	rspList := make([]api.UserDetailRespond, len(l))
 	for i, v := range l {
 		rspList[i] = *tools.UserToRsp(&v)
-		rel, err := b.ds.UserFollowRelation().Get(ctx, &model.UserFollowed{UserID: userID, ToUserID: v.UserId})
+		rel, err := b.ds.UserFollowRelation().Get(ctx, &model.UserFollowed{UserID: userID, ToUserID: v.UserID})
 		if err != nil {
 			return &rsp, err
 		}

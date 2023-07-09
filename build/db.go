@@ -8,13 +8,14 @@ import (
 func main() {
 	TikTokk.Config()
 	TikTokk.Mysql()
-	TikTokk.DB.AutoMigrate(&model.UserFollowed{})
-	TikTokk.DB.AutoMigrate(&model.User{})
-	TikTokk.DB.AutoMigrate(&model.UserFavorite{})
-	TikTokk.DB.AutoMigrate(&model.Comment{})
-	TikTokk.DB.AutoMigrate(&model.Chat_Message{})
-	TikTokk.DB.AutoMigrate(&model.Video{})
-
+	TikTokk.DB.AutoMigrate(
+		&model.UserFollowed{},
+		&model.User{},
+		&model.UserFavorite{},
+		&model.Comment{},
+		&model.ChatMessage{},
+		&model.Video{},
+	)
 	// user := model.LoginUser{Password: "333", Name: "ttt"}
 	//tools.DB.Create(&user)
 	//variable u model.LoginUser

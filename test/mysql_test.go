@@ -71,7 +71,7 @@ func TestMain(m *testing.M) {
 	db.Use(dbresolver.Register(dbresolver.Config{
 		Replicas: []gorm.Dialector{mysql.Open(slave1), mysql.Open(slave2)},
 		Policy:   dbresolver.RandomPolicy{},
-	}, &model.User{}, &model.UserFollowed{}, &model.Chat_Message{}, &model.Comment{}, &model.UserFavorite{}, &model.Video{}))
+	}, &model.User{}, &model.UserFollowed{}, &model.ChatMessage{}, &model.Comment{}, &model.UserFavorite{}, &model.Video{}))
 
 	DB = db
 }
@@ -79,7 +79,7 @@ func TestMain(m *testing.M) {
 func BenchmarkSingleDB(b *testing.B) {
 	for n := 0; n < b.N; n++ {
 		var u model.User
-		DB.Where(model.User{UserId: 1}).First(&u)
+		DB.Where(model.User{UserID: 1}).First(&u)
 	}
 
 }

@@ -12,8 +12,8 @@ import (
 )
 
 type CommentBiz interface {
-	Delete(ctx context.Context, commentID, videoID uint, username string) error
-	Create(ctx context.Context, videoID uint, username, commentText string) (*api.CommentActionRsp, error)
+	Delete(ctx context.Context, commentID, videoID, userID uint) error
+	Create(ctx context.Context, videoID, userID uint, commentText string) (*api.CommentActionRsp, error)
 	List(ctx context.Context, videoID uint) (*api.CommentListRsp, error)
 }
 
@@ -38,7 +38,7 @@ func (b BComment) List(ctx context.Context, videoID uint) (*api.CommentListRsp, 
 	rList := make([]api.CommentDetailRsp, len(list))
 	for i, v := range list {
 		rList[i] = *tools.CommentToRsp(&v)
-		u, err := b.ds.Users().GetByID(ctx, v.UserId)
+		u, err := b.ds.Users().Get(ctx, &model.User{UserID: v.UserId})
 		if err != nil {
 			return &rsp, err
 		}
@@ -48,26 +48,26 @@ func (b BComment) List(ctx context.Context, videoID uint) (*api.CommentListRsp, 
 	return &rsp, nil
 }
 
-func (b BComment) Delete(ctx context.Context, commentID, videoID uint, username string) error {
+func (b BComment) Delete(ctx context.Context, commentID, videoID, userID uint) error {
 	//得到comment具体信息,对比申请删除是否同作者相同
-	comment, err := b.ds.Comment().GetByCommentID(ctx, commentID)
+	comment, err := b.ds.Comment().Get(ctx, &model.Comment{CommentID: commentID})
 	if err != nil {
 		return err
 	}
-	if comment.UserName != username {
+	if comment.UserId != userID {
 		return fmt.Errorf("非评论发布者")
 	}
 	//获取视频信息得到评论数
-	v, err := b.ds.Videos().GetByVideoID(ctx, videoID)
+	v, err := b.ds.Videos().Get(ctx, &model.Video{VideoID: videoID})
 	if err != nil {
 		return err
 	}
 	//创建事务,删除记录,视频评论数-1
 	f := func(tx *gorm.DB) error {
-		if err := tx.Table("comments").Delete(&model.Comment{Id: commentID}).Error; err != nil {
+		if err := tx.Table("comments").Delete(&model.Comment{CommentID: commentID}).Error; err != nil {
 			return err
 		}
-		if err := tx.Table("videos").Model(&model.Video{VideoId: videoID}).Update(
+		if err := tx.Table("videos").Model(&model.Video{VideoID: videoID}).Update(
 			"comment_count", v.CommentCount-1).Error; err != nil {
 			return err
 		}
@@ -79,15 +79,15 @@ func (b BComment) Delete(ctx context.Context, commentID, videoID uint, username 
 	return nil
 }
 
-func (b BComment) Create(ctx context.Context, videoID uint, username, commentText string) (*api.CommentActionRsp, error) {
+func (b BComment) Create(ctx context.Context, videoID, userID uint, commentText string) (*api.CommentActionRsp, error) {
 	var rsp api.CommentActionRsp
 	//得到视频总评论数
-	v, err := b.ds.Videos().GetByVideoID(ctx, videoID)
+	v, err := b.ds.Videos().Get(ctx, &model.Video{VideoID: videoID})
 	if err != nil {
 		return &rsp, err
 	}
 	//得到作者信息,并转化
-	u, err := b.ds.Users().GetByName(ctx, username)
+	u, err := b.ds.Users().Get(ctx, &model.User{UserID: userID})
 	if err != nil {
 		return &rsp, err
 	}
@@ -97,13 +97,13 @@ func (b BComment) Create(ctx context.Context, videoID uint, username, commentTex
 	//创建时间为服务器当前时间
 	nowTime := time.Now().Format("01-02")
 	//创建结构体
-	c := model.Comment{VideoId: videoID, CreateDate: nowTime, Content: commentText, UserName: username, UserId: u.UserId}
+	c := model.Comment{VideoId: videoID, CreateDate: nowTime, Content: commentText, UserName: u.Name, UserId: u.UserID}
 	//创建事务,创建记录,视频评论数+1
 	f := func(tx *gorm.DB) error {
 		if err := tx.Table("comments").Create(&c).Error; err != nil {
 			return err
 		}
-		if err := tx.Table("videos").Model(&model.Video{VideoId: videoID}).Update(
+		if err := tx.Table("videos").Model(&model.Video{VideoID: videoID}).Update(
 			"comment_count", v.CommentCount+1).Error; err != nil {
 			return err
 		}
@@ -113,7 +113,7 @@ func (b BComment) Create(ctx context.Context, videoID uint, username, commentTex
 		return &rsp, err
 	}
 	//得到创建完成的信息
-	com, err := b.ds.Comment().GetByUName(ctx, videoID, username, nowTime)
+	com, err := b.ds.Comment().Get(ctx, &model.Comment{VideoId: videoID, UserId: userID, CreateDate: nowTime})
 	if err != nil {
 		return &rsp, err
 	}

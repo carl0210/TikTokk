@@ -1,8 +1,9 @@
-package relation
+package store
 
 import (
 	"TikTokk/internal/TikTokk/model"
 	"context"
+	"github.com/go-redis/redis/v8"
 	"gorm.io/gorm"
 )
 
@@ -20,12 +21,13 @@ type IUserFollowRelation interface {
 
 type SUserFollowRelation struct {
 	db *gorm.DB
+	rc *redis.Client
 }
 
 var _ IUserFollowRelation = (*SUserFollowRelation)(nil)
 
-func NewSUserFollowRelation(db *gorm.DB) *SUserFollowRelation {
-	return &SUserFollowRelation{db: db}
+func NewSUserFollowRelation(db *gorm.DB, rc *redis.Client) *SUserFollowRelation {
+	return &SUserFollowRelation{db: db, rc: rc}
 }
 
 func (s *SUserFollowRelation) Update(ctx context.Context, old *model.UserFollowed, IsFallow bool) error {

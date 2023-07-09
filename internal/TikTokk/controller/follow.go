@@ -4,7 +4,7 @@ import (
 	"TikTokk/api"
 	"TikTokk/internal/TikTokk/biz"
 	"TikTokk/internal/TikTokk/store"
-	"TikTokk/internal/pkg/token"
+	"TikTokk/internal/pkg/Tlog"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -28,17 +28,18 @@ func NewCRelFollow(ds store.DataStore) *CRelation {
 
 func (c *CRelation) FollowAction(ctx *gin.Context) {
 	var req api.FollowActionReq
-	if err := ctx.BindQuery(&req); err != nil {
-		ctx.JSON(http.StatusOK, api.FollowActionRsp{StatusCode: 1, StatusMsg: "invalid field"})
+	if err := ctx.ShouldBindQuery(&req); err != nil || req.ToUserID < 0 || req.ActionType != 1 && req.ActionType != 2 {
+		ctx.JSON(http.StatusOK, api.FollowActionRsp{StatusCode: 1, StatusMsg: "FollowAction invalid field"})
 		return
 	}
-	if req.ActionType != 1 && req.ActionType != 2 {
-		ctx.JSON(http.StatusOK, api.FollowActionRsp{StatusCode: 1, StatusMsg: "actionType未知"})
+
+	userID, err := GetUserID(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusOK, api.CommentActionRsp{StatusCode: 1, StatusMsg: err.Error()})
 		return
 	}
-	username := ctx.GetString(token.Config.IdentityKey)
 	//biz
-	err := c.b.Follow().Action(ctx, username, uint(req.ToUserID), uint(req.ActionType))
+	err = c.b.Follow().Action(ctx, userID, uint(req.ToUserID), uint(req.ActionType))
 	if err != nil {
 		ctx.JSON(http.StatusOK, api.FollowActionRsp{StatusCode: 1, StatusMsg: err.Error()})
 		return
@@ -55,8 +56,8 @@ func (c *CRelation) FollowAction(ctx *gin.Context) {
 
 func (c *CRelation) FollowList(ctx *gin.Context) {
 	var req api.FollowListReq
-	if err := ctx.BindQuery(&req); err != nil {
-		ctx.JSON(http.StatusOK, api.FollowListRsp{StatusCode: 1, StatusMsg: "invalid field"})
+	if err := ctx.ShouldBindQuery(&req); err != nil {
+		ctx.JSON(http.StatusOK, api.FollowListRsp{StatusCode: 1, StatusMsg: "FollowList invalid field"})
 		return
 	}
 	//biz
@@ -73,13 +74,14 @@ func (c *CRelation) FollowList(ctx *gin.Context) {
 
 func (c *CRelation) FollowerList(ctx *gin.Context) {
 	var req api.FollowerListReq
-	if err := ctx.BindQuery(&req); err != nil {
-		ctx.JSON(http.StatusOK, api.FollowerListRsp{StatusCode: 1, StatusMsg: "invalid field"})
+	if err := ctx.ShouldBindQuery(&req); err != nil || req.UserID < 0 {
+		ctx.JSON(http.StatusOK, api.FollowerListRsp{StatusCode: 1, StatusMsg: "FollowerList invalid field"})
 		return
 	}
 	//biz
 	rsp, err := c.b.Follow().FollowerList(ctx, uint(req.UserID))
 	if err != nil {
+		Tlog.Infow(err.Error())
 		ctx.JSON(http.StatusOK, api.FollowListRsp{StatusCode: 1, StatusMsg: err.Error()})
 		return
 	}
@@ -91,8 +93,8 @@ func (c *CRelation) FollowerList(ctx *gin.Context) {
 
 func (c *CRelation) FriendListList(ctx *gin.Context) {
 	var req api.FriendListReq
-	if err := ctx.BindQuery(&req); err != nil {
-		ctx.JSON(http.StatusOK, api.FriendListRsp{StatusCode: 1, StatusMsg: "invalid field"})
+	if err := ctx.ShouldBindQuery(&req); err != nil {
+		ctx.JSON(http.StatusOK, api.FriendListRsp{StatusCode: 1, StatusMsg: "FriendList invalid field"})
 		return
 	}
 	//biz

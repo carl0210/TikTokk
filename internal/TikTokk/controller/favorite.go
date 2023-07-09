@@ -4,10 +4,9 @@ import (
 	"TikTokk/api"
 	"TikTokk/internal/TikTokk/biz"
 	"TikTokk/internal/TikTokk/store"
-	"TikTokk/internal/pkg/token"
 	"github.com/gin-gonic/gin"
+	"log"
 	"net/http"
-	"strconv"
 )
 
 type IRelFavorite interface {
@@ -27,17 +26,14 @@ func NewCRelFavorite(db store.DataStore) *CRelFavorite {
 
 func (c *CRelFavorite) List(ctx *gin.Context) {
 	//获取userID
-	userIDStr := ctx.Query("user_id")
-	userID, err := strconv.Atoi(userIDStr)
-	if err != nil {
-		ctx.JSON(http.StatusOK, api.FavoriteListRsp{
-			StatusMsg:  err.Error(),
-			StatusCode: 1,
-		})
+	var req api.FavoriteListReq
+	if err := ctx.ShouldBindQuery(&req); err != nil {
+		log.Println(err)
+		ctx.JSON(http.StatusOK, api.FavoriteListRsp{StatusCode: 1, StatusMsg: "FavoriteList invalid field"})
 		return
 	}
 	//进入biz层
-	rsp, err := c.b.FavoriteRel().List(ctx, uint(userID))
+	rsp, err := c.b.FavoriteRel().List(ctx, uint(req.UserID))
 	if err != nil {
 		ctx.JSON(http.StatusOK, api.FavoriteListRsp{
 			StatusMsg:  err.Error(),
@@ -54,13 +50,17 @@ func (c *CRelFavorite) List(ctx *gin.Context) {
 
 func (c *CRelFavorite) Action(ctx *gin.Context) {
 	var req api.FavoriteActionReq
-	if err := ctx.BindQuery(&req); err != nil {
-		ctx.JSON(http.StatusOK, api.FavoriteActionRsp{StatusCode: 1, StatusMsg: "invalid field"})
+	if err := ctx.ShouldBindQuery(&req); err != nil {
+		ctx.JSON(http.StatusOK, api.FavoriteActionRsp{StatusCode: 1, StatusMsg: "FavoriteAction invalid field"})
 		return
 	}
-	//得到token的username
-	username := ctx.GetString(token.Config.IdentityKey)
-	err := c.b.FavoriteRel().Action(ctx, uint(req.VideoID), uint(req.ActionType), username)
+	//得到token的userID
+	userID, err := GetUserID(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusOK, api.CommentActionRsp{StatusCode: 1, StatusMsg: err.Error()})
+		return
+	}
+	err = c.b.FavoriteRel().Action(ctx, uint(req.VideoID), uint(req.ActionType), userID)
 	if err != nil {
 		ctx.JSON(http.StatusOK, api.FavoriteActionRsp{StatusCode: 1, StatusMsg: err.Error()})
 		return

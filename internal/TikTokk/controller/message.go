@@ -4,7 +4,6 @@ import (
 	"TikTokk/api"
 	"TikTokk/internal/TikTokk/biz"
 	"TikTokk/internal/TikTokk/store"
-	"TikTokk/internal/pkg/token"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"time"
@@ -27,14 +26,18 @@ func NewCMessage(ds store.DataStore) *CMessage {
 
 func (c *CMessage) Action(ctx *gin.Context) {
 	var req api.MessageActionReq
-	if err := ctx.BindQuery(&req); err != nil {
-		ctx.JSON(http.StatusOK, api.MessageActionRsp{StatusCode: 1, StatusMsg: "invalid field"})
+	if err := ctx.ShouldBindQuery(&req); err != nil || req.ToUserID < 0 || req.ActionType != 1 {
+		ctx.JSON(http.StatusOK, api.MessageActionRsp{StatusCode: 1, StatusMsg: "MessageAction invalid field"})
 		return
 	}
-	//从token中获取name
-	name := ctx.GetString(token.Config.IdentityKey)
+	//从token中获取id
+	userID, err := GetUserID(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusOK, api.CommentActionRsp{StatusCode: 1, StatusMsg: err.Error()})
+		return
+	}
 	//biz
-	err := c.b.Message().Action(ctx, name, req.Content, req.ToUserID)
+	err = c.b.Message().Action(ctx, req.Content, userID, uint(req.ToUserID))
 	if err != nil {
 		ctx.JSON(http.StatusOK, api.MessageActionRsp{StatusCode: 1, StatusMsg: err.Error()})
 		return
@@ -45,18 +48,22 @@ func (c *CMessage) Action(ctx *gin.Context) {
 
 func (c *CMessage) Chat(ctx *gin.Context) {
 	var req api.MessageChatReq
-	if err := ctx.BindQuery(&req); err != nil {
-		ctx.JSON(http.StatusOK, api.MessageChatRsp{StatusCode: 1, StatusMsg: "invalid field"})
+	if err := ctx.ShouldBindQuery(&req); err != nil || req.ToUserID < 0 {
+		ctx.JSON(http.StatusOK, api.MessageChatRsp{StatusCode: 1, StatusMsg: "MessageChat invalid field"})
 		return
 	}
 	//得到name
-	name := ctx.GetString(token.Config.IdentityKey)
+	userID, err := GetUserID(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusOK, api.CommentActionRsp{StatusCode: 1, StatusMsg: err.Error()})
+		return
+	}
 
 	if req.PreMsgTime == 0 {
 		req.PreMsgTime = time.Now().Add(-time.Hour).Unix()
 	}
 	//biz
-	l, err := c.b.Message().Chat(ctx, name, req.ToUserID, req.PreMsgTime)
+	l, err := c.b.Message().Chat(ctx, userID, uint(req.ToUserID), req.PreMsgTime)
 	if err != nil {
 		ctx.JSON(http.StatusOK, api.MessageChatRsp{StatusCode: 1, StatusMsg: err.Error()})
 		return

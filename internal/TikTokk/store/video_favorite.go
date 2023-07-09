@@ -1,13 +1,14 @@
-package relation
+package store
 
 import (
 	"TikTokk/internal/TikTokk/model"
 	"context"
+	"github.com/go-redis/redis/v8"
 	"gorm.io/gorm"
 )
 
 type IVideoFavoriteRelation interface {
-	ListLen(ctx context.Context, userID, len uint) ([]model.Video, error)
+	ListLen(ctx context.Context, userID uint, len int64) ([]model.Video, error)
 	Transaction(ctx context.Context, f func(db *gorm.DB) error) error
 	Get(ctx context.Context, VideoId, userId uint) (new *model.UserFavorite, err error)
 	Create(ctx context.Context, favorite *model.UserFavorite) error
@@ -17,19 +18,20 @@ type IVideoFavoriteRelation interface {
 
 type SVideoFavoriteRelation struct {
 	db *gorm.DB
+	rc *redis.Client
 }
 
 var _ IVideoFavoriteRelation = (*SVideoFavoriteRelation)(nil)
 
-func (s *SVideoFavoriteRelation) ListLen(ctx context.Context, userID, len uint) ([]model.Video, error) {
+func (s *SVideoFavoriteRelation) ListLen(ctx context.Context, userID uint, len int64) ([]model.Video, error) {
 	l := make([]model.Video, len)
 	err := s.db.Where("video_id IN (?)",
 		s.db.Table("user_favorites").Select("video_id").Where("user_id= ?  AND is_favorite = ? ", userID, 1)).Find(&l).Error
 	return l, err
 }
 
-func NewSVideoFavoriteRelation(db *gorm.DB) *SVideoFavoriteRelation {
-	return &SVideoFavoriteRelation{db: db}
+func NewSVideoFavoriteRelation(db *gorm.DB, rc *redis.Client) *SVideoFavoriteRelation {
+	return &SVideoFavoriteRelation{db: db, rc: rc}
 }
 
 func (s *SVideoFavoriteRelation) Get(ctx context.Context, VideoId, userId uint) (*model.UserFavorite, error) {

@@ -2,17 +2,16 @@ package TikTokk
 
 import (
 	"TikTokk/internal/TikTokk/biz/video"
-	"TikTokk/internal/TikTokk/model"
 	"TikTokk/internal/TikTokk/store"
 	"TikTokk/internal/pkg/Tlog"
 	"TikTokk/internal/pkg/token"
 	"context"
 	"fmt"
+	"github.com/go-redis/redis/v8"
 	"github.com/spf13/viper"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
-	"gorm.io/plugin/dbresolver"
 	"log"
 	"os"
 	"sync"
@@ -25,8 +24,18 @@ func TikTokInit() {
 	Config()
 	Logg()
 	Mysql()
+	Redis()
 	TikTokk()
 	Tlog.Infow("TikTokInit Successful")
+}
+
+func Redis() {
+	RC = redis.NewClient(&redis.Options{
+		Addr:     "192.168.31.30:6379",
+		DB:       0,
+		Password: "",
+	})
+	RC.FlushAll(context.Background())
 }
 
 func Logg() {
@@ -55,22 +64,22 @@ func Mysql() {
 		viper.GetString("mysql-master.database"),
 		viper.GetString("mysql-master.config"),
 	)
-	slave1 := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?%s",
-		viper.GetString("mysql-slave-1.user"),
-		viper.GetString("mysql-slave-1.password"),
-		viper.GetString("mysql-slave-1.ip"),
-		viper.GetInt("mysql-slave-1.port"),
-		viper.GetString("mysql-slave-1.database"),
-		viper.GetString("mysql-slave-1.config"),
-	)
-	slave2 := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?%s",
-		viper.GetString("mysql-slave-2.user"),
-		viper.GetString("mysql-slave-2.password"),
-		viper.GetString("mysql-slave-2.ip"),
-		viper.GetInt("mysql-slave-2.port"),
-		viper.GetString("mysql-slave-2.database"),
-		viper.GetString("mysql-slave-2.config"),
-	)
+	//slave1 := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?%s",
+	//	viper.GetString("mysql-slave-1.user"),
+	//	viper.GetString("mysql-slave-1.password"),
+	//	viper.GetString("mysql-slave-1.ip"),
+	//	viper.GetInt("mysql-slave-1.port"),
+	//	viper.GetString("mysql-slave-1.database"),
+	//	viper.GetString("mysql-slave-1.config"),
+	//)
+	//slave2 := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?%s",
+	//	viper.GetString("mysql-slave-2.user"),
+	//	viper.GetString("mysql-slave-2.password"),
+	//	viper.GetString("mysql-slave-2.ip"),
+	//	viper.GetInt("mysql-slave-2.port"),
+	//	viper.GetString("mysql-slave-2.database"),
+	//	viper.GetString("mysql-slave-2.config"),
+	//)
 	log := logger.New(
 		log.New(os.Stdout, "\r\n", log.LstdFlags),
 		logger.Config{
@@ -89,10 +98,10 @@ func Mysql() {
 		return
 	}
 
-	db.Use(dbresolver.Register(dbresolver.Config{
-		Replicas: []gorm.Dialector{mysql.Open(slave1), mysql.Open(slave2)},
-		Policy:   dbresolver.RandomPolicy{},
-	}, &model.User{}, &model.UserFollowed{}, &model.Chat_Message{}, &model.Comment{}, &model.UserFavorite{}, &model.Video{}))
+	//db.Use(dbresolver.Register(dbresolver.Config{
+	//	Replicas: []gorm.Dialector{mysql.Open(slave1), mysql.Open(slave2)},
+	//	Policy:   dbresolver.RandomPolicy{},
+	//}, &model.User{}, &model.UserFollowed{}, &model.ChatMessage{}, &model.Comment{}, &model.UserFavorite{}, &model.Video{}))
 
 	DB = db
 	log.Info(context.Background(), "Init_Mysql successful")
@@ -114,7 +123,7 @@ func TikTokk() {
 
 	})
 	//初始化store层
-	_ = store.NewStore(DB)
+	_ = store.NewStore(DB, RC)
 	//初始化视频biz层
 	video.FeedLen = viper.GetInt("feed.len")
 	video.FileSavePath = viper.GetString("fileSave.file")

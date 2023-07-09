@@ -1,7 +1,7 @@
 package store
 
 import (
-	"TikTokk/internal/TikTokk/store/relation"
+	"github.com/go-redis/redis/v8"
 	"gorm.io/gorm"
 	"sync"
 )
@@ -9,14 +9,10 @@ import (
 type DataStore interface {
 	Users() UserStore
 	Videos() VideoStore
-	UserFollowRelation() relation.IUserFollowRelation
-	VideoFavoriteRelation() relation.IVideoFavoriteRelation
+	UserFollowRelation() IUserFollowRelation
+	VideoFavoriteRelation() IVideoFavoriteRelation
 	Comment() CommentStore
 	Message() MessageStore
-}
-
-type SData struct {
-	db *gorm.DB
 }
 
 var (
@@ -24,35 +20,40 @@ var (
 	S    *SData
 )
 
+type SData struct {
+	db *gorm.DB
+	rc *redis.Client
+}
+
 var _ DataStore = (*SData)(nil)
 
-func NewStore(db *gorm.DB) *SData {
+func NewStore(db *gorm.DB, rc *redis.Client) *SData {
 	once.Do(func() {
-		S = &SData{db: db}
+		S = &SData{db: db, rc: rc}
 	})
 	return S
 }
 
 func (s *SData) Videos() VideoStore {
-	return NewVideos(s.db)
+	return NewVideos(s.db, s.rc)
 }
 
 func (s *SData) Users() UserStore {
-	return NewUsers(s.db)
+	return NewUsers(s.db, s.rc)
 }
 
-func (s *SData) UserFollowRelation() relation.IUserFollowRelation {
-	return relation.NewSUserFollowRelation(s.db)
+func (s *SData) UserFollowRelation() IUserFollowRelation {
+	return NewSUserFollowRelation(s.db, s.rc)
 }
 
-func (s *SData) VideoFavoriteRelation() relation.IVideoFavoriteRelation {
-	return relation.NewSVideoFavoriteRelation(s.db)
+func (s *SData) VideoFavoriteRelation() IVideoFavoriteRelation {
+	return NewSVideoFavoriteRelation(s.db, s.rc)
 }
 
 func (s *SData) Comment() CommentStore {
-	return NewSComment(s.db)
+	return NewSComment(s.db, s.rc)
 }
 
 func (s *SData) Message() MessageStore {
-	return NewSMessage(s.db)
+	return NewSMessage(s.db, s.rc)
 }

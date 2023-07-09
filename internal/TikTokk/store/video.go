@@ -3,41 +3,37 @@ package store
 import (
 	"TikTokk/internal/TikTokk/model"
 	"context"
+	"encoding/json"
+	"fmt"
+	"github.com/go-redis/redis/v8"
 	"gorm.io/gorm"
 	"time"
 )
 
-type SVideo struct {
-	db *gorm.DB
-}
-
-func NewVideos(db *gorm.DB) *SVideo {
-	return &SVideo{db: db}
-}
-
 type VideoStore interface {
-	GetByAuthorID(ctx context.Context, authorID uint) (v *model.Video, err error)
-	GetByVideoID(ctx context.Context, videoID uint) (v *model.Video, err error)
+	Get(ctx context.Context, video *model.Video) (v *model.Video, err error)
 	Create(ctx context.Context, u *model.Video) error
 	Update(ctx context.Context, videoId uint, v *model.Video) error
 	Delete(ctx context.Context, videoId uint) error
 	List(ctx context.Context, lastTime time.Time) (list []model.Video, err error)
 	Feed(ctx context.Context, l int, lastTime time.Time) (list []model.Video, err error)
-	ListAllVideoByAuthorID(ctx context.Context, authorID uint) (list []model.Video, err error)
-	ListAllVideoByAuthorIDLen(ctx context.Context, authorID uint, l int) (list []model.Video, err error)
+	ListAllVideoByAuthorIDLen(ctx context.Context, authorID uint, l int64) (list []model.Video, err error)
+}
+
+type SVideo struct {
+	db *gorm.DB
+	rc *redis.Client
 }
 
 var _ VideoStore = (*SVideo)(nil)
 
-func (s *SVideo) GetByAuthorID(ctx context.Context, authorID uint) (*model.Video, error) {
-	var v model.Video
-	err := s.db.Table("videos").Where("author_id=?", authorID).First(&v).Error
-	return &v, err
+func NewVideos(db *gorm.DB, rc *redis.Client) *SVideo {
+	return &SVideo{db: db, rc: rc}
 }
 
-func (s *SVideo) GetByVideoID(ctx context.Context, VideoID uint) (*model.Video, error) {
+func (s *SVideo) Get(ctx context.Context, video *model.Video) (*model.Video, error) {
 	var v model.Video
-	err := s.db.Table("videos").Where("video_id=?", VideoID).First(&v).Error
+	err := s.db.Where(video).First(&v).Error
 	return &v, err
 }
 
@@ -46,11 +42,11 @@ func (s *SVideo) Create(ctx context.Context, v *model.Video) error {
 }
 
 func (s *SVideo) Update(ctx context.Context, videoId uint, v *model.Video) error {
-	return s.db.Model(&model.Video{VideoId: videoId}).Save(v).Error
+	return s.db.Model(&model.Video{VideoID: videoId}).Save(v).Error
 }
 
 func (s *SVideo) Delete(ctx context.Context, videoId uint) error {
-	return s.db.Delete(&model.Video{VideoId: videoId}).Error
+	return s.db.Delete(&model.Video{VideoID: videoId}).Error
 }
 
 func (s *SVideo) List(ctx context.Context, lastTime time.Time) ([]model.Video, error) {
@@ -60,22 +56,90 @@ func (s *SVideo) List(ctx context.Context, lastTime time.Time) ([]model.Video, e
 }
 
 func (s *SVideo) Feed(ctx context.Context, l int, lastTime time.Time) ([]model.Video, error) {
+	//如果不存在主键,则直接通过数据库查询,并将结果同步到redis
+	redisKey := fmt.Sprintf("videos-feed")
+	//存在主键则通过redis查询
+	jStr, err := s.rc.Get(ctx, redisKey).Result()
+	if err != nil {
+		if err == redis.Nil {
+			return s.FeedPartOfMysqlAndSyncToRedis(ctx, l, lastTime, redisKey)
+		}
+		return nil, err
+	}
+	//如果redis查询不到则通过数据库查询
+	if jStr == "" {
+		return s.FeedPartOfMysqlAndSyncToRedis(ctx, l, lastTime, redisKey)
+	}
+	//如果有记录,则解码得到的json
+	ru := make([]model.VideoRedis, l)
+	if err := json.Unmarshal([]byte(jStr), &ru); err != nil {
+		return nil, err
+	}
+	//转化并返回
+	rup := make([]model.Video, len(ru))
+	for i, v := range ru {
+		rup[i] = v.ToMysqlStruct()
+	}
+	return rup, nil
+
+}
+
+func (s *SVideo) FeedPartOfMysqlAndSyncToRedis(ctx context.Context, l int, lastTime time.Time, redisKey string) ([]model.Video, error) {
+	//查询数据库
 	list := make([]model.Video, 0, l)
-	err := s.db.Table("videos").Order("updated_at desc").Where("updated_at < ?", lastTime).Limit(l).Find(&list).Error
-	return list, err
+	err := s.db.WithContext(ctx).Table("videos").Order("updated_at desc").Where("updated_at < ?", lastTime).Limit(l).Find(&list).Error
+	//将结果同步到redis
+	err = SyncToRedis(ctx, s.rc, redisKey, list)
+	if err != nil {
+		return list, err
+	}
+	return list, nil
 }
 
-func (s *SVideo) ListAllVideoByAuthorID(ctx context.Context, authorID uint) ([]model.Video, error) {
-	var list []model.Video
-	err := s.db.Where("author_id=?", authorID).Find(&list).Error
-	return list, err
+func (s *SVideo) ListAllVideoByAuthorIDLen(ctx context.Context, authorID uint, l int64) ([]model.Video, error) {
+	//先从redis查询
+	redisKey := fmt.Sprintf("videos-publishList-%d", authorID)
+	j, err := s.rc.Get(ctx, redisKey).Result()
+	if err != nil {
+		return nil, err
+	}
+	//如果查询不到则访问数据库,并同步到redis
+	if j == "" {
+		return s.GetPartOfMysqlAndSyncToRedis(ctx, authorID, l, redisKey)
+	}
+	//如果查询到则返回结果
+	listR := make([]model.VideoRedis, l)
+	if err := json.Unmarshal([]byte(j), &listR); err != nil {
+		return nil, err
+	}
+	//转化并返回
+	listD := make([]model.Video, len(listR))
+	for i, v := range listR {
+		listD[i] = v.ToMysqlStruct()
+	}
+	return listD, nil
 }
 
-func (s *SVideo) ListAllVideoByAuthorIDLen(ctx context.Context, authorID uint, l int) ([]model.Video, error) {
+func (s *SVideo) GetPartOfMysqlAndSyncToRedis(ctx context.Context, authorID uint, l int64, redisKey string) ([]model.Video, error) {
+	//查询数据库
 	list := make([]model.Video, l)
 	err := s.db.Where("author_id=?", authorID).Find(&list).Error
-	return list, err
+	if err != nil {
+		return nil, err
+	}
+	//将结果同步到redis
+	err = SyncToRedis(ctx, s.rc, redisKey, list)
+	if err != nil {
+		return list, err
+	}
+	return list, nil
 }
+
+//func (s *SVideo) ListAllVideoByAuthorIDLen(ctx context.Context, authorID uint64, l int64) ([]model.Video, error) {
+//	list := make([]model.Video, l)
+//	err := s.db.Where("author_id=?", authorID).Find(&list).Error
+//	return list, err
+//}
 
 //func CreateVideo(v *model.Video) {
 //	tools.DB.Create(v)

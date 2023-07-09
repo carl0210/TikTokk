@@ -5,9 +5,11 @@ import (
 	"TikTokk/internal/TikTokk/biz"
 	"TikTokk/internal/TikTokk/store"
 	"TikTokk/internal/pkg/token"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 	"net/http"
+	"strconv"
 	"time"
 )
 
@@ -29,34 +31,38 @@ func NewCVideo(s store.DataStore) *CVideo {
 
 func (c *CVideo) Feed(ctx *gin.Context) {
 	var req api.VideoFeedListReq
-	if err := ctx.BindQuery(&req); err != nil {
-		ctx.JSON(http.StatusOK, api.VideoFeedListRsp{StatusCode: 1, StatusMsg: "invalid field"})
+	if err := ctx.ShouldBindQuery(&req); err != nil {
+		fmt.Println(err)
+		ctx.JSON(http.StatusOK, api.VideoFeedListRsp{StatusCode: 1, StatusMsg: "Feed invalid field"})
 		return
 	}
-	//获取token中的用户名
-	var name string
-	t := ctx.Query("token")
-	if len(t) != 0 {
-		name, _ = token.Parse(t, token.Config.Key)
+	//获取token中的用户ID
+	var userID int
+	userIDStr, err := token.Parse(req.Token, token.Config.Key)
+	if err != nil {
+		userID = 0
 	} else {
-		name = ""
+
+		userID, err = strconv.Atoi(userIDStr)
+		if err != nil {
+			userID = 0
+		}
+
 	}
 
-	//如果未传入,则为当前时间
-	if req.LatestTime == 0 {
+	//如果未传入或如果latest_time比当前时间大则代表不合法,则为当前时间
+	if req.LatestTime == 0 || req.LatestTime > time.Now().Unix() {
 		req.LatestTime = time.Now().Unix()
 	}
-	//如果latest_time比当前时间大则代表不合法
-	if req.LatestTime > time.Now().Unix() {
-		req.LatestTime = time.Now().Unix()
-	}
-	rsp, err := c.b.Videos().GetVideoFeedList(ctx, name, req.LatestTime)
+
+	rsp, err := c.b.Videos().GetVideoFeedList(ctx, uint(userID), req.LatestTime)
 	if err != nil {
 		rsp.StatusMsg = err.Error()
 		rsp.StatusCode = 1
 		ctx.JSON(http.StatusOK, rsp)
 		return
 	}
+
 	rsp.StatusCode = 0
 	rsp.StatusMsg = "获取成功!"
 	ctx.JSON(http.StatusOK, rsp)
@@ -65,12 +71,16 @@ func (c *CVideo) Feed(ctx *gin.Context) {
 
 func (c *CVideo) PublishAction(ctx *gin.Context) {
 	var req api.VideoPublishActionReq
-	if err := ctx.BindWith(&req, binding.FormMultipart); err != nil {
-		ctx.AbortWithStatusJSON(http.StatusOK, api.VideoPublishActionRsp{StatusCode: 1, StatusMsg: "invalid field"})
+	if err := ctx.ShouldBindWith(&req, binding.FormMultipart); err != nil {
+		ctx.JSON(http.StatusOK, api.VideoPublishActionRsp{StatusCode: 1, StatusMsg: "VideoPublishAction invalid field"})
 		return
 	}
-	username := ctx.GetString(token.Config.IdentityKey)
-	err := c.b.Videos().PublishAction(ctx, req.Data, req.Title, username)
+	userID, err := GetUserID(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusOK, api.CommentActionRsp{StatusCode: 1, StatusMsg: err.Error()})
+		return
+	}
+	err = c.b.Videos().PublishAction(ctx, req.Data, req.Title, userID)
 	if err != nil {
 		ctx.JSON(http.StatusOK, api.VideoPublishActionRsp{StatusCode: 1, StatusMsg: err.Error()})
 		return
@@ -82,14 +92,13 @@ func (c *CVideo) PublishAction(ctx *gin.Context) {
 
 func (c *CVideo) PublishList(ctx *gin.Context) {
 	var req api.VideoPublishListReq
-	if err := ctx.BindQuery(&req); err != nil {
-		ctx.JSON(http.StatusOK, api.VideoPublishListRsp{StatusCode: 1, StatusMsg: "invalid field"})
+	if err := ctx.ShouldBindQuery(&req); err != nil || req.UserID < 0 {
+		ctx.JSON(http.StatusOK, api.VideoPublishListRsp{StatusCode: 1, StatusMsg: "VideoPublishList invalid field"})
 		return
 	}
-	rsp, err := c.b.Videos().PublishList(ctx, int(req.UserID))
+	rsp, err := c.b.Videos().PublishList(ctx, uint(req.UserID))
 	if err != nil {
-		rsp := api.VideoPublishListRsp{VideoList: nil, StatusCode: 1, StatusMsg: err.Error()}
-		ctx.JSON(http.StatusOK, rsp)
+		ctx.JSON(http.StatusOK, api.VideoPublishListRsp{VideoList: nil, StatusCode: 1, StatusMsg: err.Error()})
 		return
 	}
 	rsp.StatusCode = 0

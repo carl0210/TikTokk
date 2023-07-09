@@ -4,8 +4,6 @@ import (
 	"TikTokk/api"
 	"TikTokk/internal/TikTokk/biz"
 	"TikTokk/internal/TikTokk/store"
-	"TikTokk/internal/pkg/token"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -27,16 +25,20 @@ func NewCComment(s store.DataStore) *CComment {
 
 func (c CComment) Action(ctx *gin.Context) {
 	var req api.CommentActionReq
-	if err := ctx.ShouldBindQuery(&req); err != nil {
-		fmt.Println(err)
-		ctx.JSON(http.StatusOK, api.CommentActionRsp{StatusCode: 1, StatusMsg: "invalid field"})
+	if err := ctx.ShouldBindQuery(&req); err != nil || req.CommentID < 0 || req.VideoID < 0 {
+		ctx.JSON(http.StatusOK, api.CommentActionRsp{StatusCode: 1, StatusMsg: "CommentAction invalid field"})
 		return
 	}
-	username := ctx.GetString(token.Config.IdentityKey)
+	userID, err := GetUserID(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusOK, api.CommentActionRsp{StatusCode: 1, StatusMsg: err.Error()})
+		return
+	}
+
 	//对不同类型进行处理
 	if req.ActionType == "1" {
 		//biz
-		rsp, err := c.b.Comment().Create(ctx, uint(req.VideoID), username, req.CommentText)
+		rsp, err := c.b.Comment().Create(ctx, uint(req.VideoID), userID, req.CommentText)
 		if err != nil {
 			ctx.JSON(http.StatusOK, api.CommentActionRsp{StatusCode: 1, StatusMsg: err.Error()})
 			return
@@ -49,7 +51,7 @@ func (c CComment) Action(ctx *gin.Context) {
 
 	} else if req.ActionType == "2" {
 		//biz
-		err := c.b.Comment().Delete(ctx, uint(req.CommentID), uint(req.VideoID), username)
+		err := c.b.Comment().Delete(ctx, uint(req.CommentID), uint(req.VideoID), userID)
 		if err != nil {
 			rsp := api.CommentActionRsp{StatusCode: 1, StatusMsg: "comment_id不正确"}
 			ctx.JSON(http.StatusOK, rsp)
@@ -69,8 +71,8 @@ func (c CComment) Action(ctx *gin.Context) {
 
 func (c CComment) List(ctx *gin.Context) {
 	var req api.CommentListReq
-	if err := ctx.BindQuery(&req); err != nil {
-		ctx.JSON(http.StatusOK, api.CommentListRsp{StatusCode: 1, StatusMsg: "invalid field"})
+	if err := ctx.ShouldBindQuery(&req); err != nil {
+		ctx.JSON(http.StatusOK, api.CommentListRsp{StatusCode: 1, StatusMsg: "CommentList invalid field"})
 		return
 	}
 	//biz
