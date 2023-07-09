@@ -3,8 +3,8 @@ package api
 import "mime/multipart"
 
 type VideoFeedListReq struct {
-	LatestTime int64  `json:"latest_time,omitempty" form:"latest_time,omitempty"  binding:"numeric,gte=0"` // 可选参数，限制返回视频的最新投稿时间戳，精确到秒，不填表示当前时间
-	Token      string `json:"token,omitempty" form:"token,omitempty"`                                      // 用户登录状态下设置
+	LatestTime int64  `json:"latest_time,omitempty" form:"latest_time,omitempty"  binding:"numeric"` // 可选参数，限制返回视频的最新投稿时间戳，精确到秒，不填表示当前时间
+	Token      string `json:"token,omitempty" form:"token,omitempty"`                                // 用户登录状态下设置
 }
 
 type VideoFeedListRsp struct {

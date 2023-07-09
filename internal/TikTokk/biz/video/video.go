@@ -14,9 +14,9 @@ import (
 )
 
 type VideoBiz interface {
-	GetVideoFeedList(ctx context.Context, username string, latestTime int64) (rsp *api.VideoFeedListRsp, err error)
-	PublishAction(ctx *gin.Context, file *multipart.FileHeader, title, username string) error
-	PublishList(ctx context.Context, userID int) (*api.VideoPublishListRsp, error)
+	GetVideoFeedList(ctx context.Context, userID uint, latestTime int64) (rsp *api.VideoFeedListRsp, err error)
+	PublishAction(ctx *gin.Context, file *multipart.FileHeader, title string, userID uint) error
+	PublishList(ctx context.Context, userID uint) (*api.VideoPublishListRsp, error)
 }
 
 type BVideo struct {
@@ -29,10 +29,9 @@ func New(s store.DataStore) *BVideo {
 	return &BVideo{ds: s}
 }
 
-func (b *BVideo) GetVideoFeedList(ctx context.Context, username string, latestTime int64) (*api.VideoFeedListRsp, error) {
+func (b *BVideo) GetVideoFeedList(ctx context.Context, userID uint, latestTime int64) (rsp *api.VideoFeedListRsp, err error) {
 	//获取限制返回视频的最新投稿时间
 	//获取视频
-	FeedLen := FeedLen
 	list, err := b.ds.Videos().Feed(ctx, FeedLen, time.Unix(latestTime, 0))
 	if err != nil {
 		return &api.VideoFeedListRsp{}, err
@@ -42,9 +41,9 @@ func (b *BVideo) GetVideoFeedList(ctx context.Context, username string, latestTi
 	videoList := make([]api.VideoDetailRespond, len(list))
 	//得到登录用户的信息，以获得对各视频的喜欢状态和其作者的关注状态
 	var u *model.User
-	if len(username) != 0 {
+	if userID != 0 {
 		//如果存在登录用户
-		u, err = b.ds.Users().GetByName(ctx, username)
+		u, err = b.ds.Users().Get(ctx, &model.User{UserID: uint(userID)})
 		if err != nil {
 			return &api.VideoFeedListRsp{}, err
 		}
@@ -55,7 +54,7 @@ func (b *BVideo) GetVideoFeedList(ctx context.Context, username string, latestTi
 
 	for i, v := range list {
 		//得到作者信息
-		author, err := b.ds.Users().GetByID(ctx, v.AuthorId)
+		author, err := b.ds.Users().Get(ctx, &model.User{UserID: v.AuthorId})
 		if err != nil {
 			return &api.VideoFeedListRsp{}, err
 		}
@@ -67,7 +66,7 @@ func (b *BVideo) GetVideoFeedList(ctx context.Context, username string, latestTi
 			videoList[i].IsFavorite = false
 		} else {
 			//若登录账号则拉取关系
-			relFavorite, err := b.ds.VideoFavoriteRelation().FirstOrCreate(ctx, v.VideoId, u.UserId, u.Name)
+			relFavorite, err := b.ds.VideoFavoriteRelation().FirstOrCreate(ctx, v.VideoID, u.UserID, u.Name)
 			if err != nil {
 				return &api.VideoFeedListRsp{}, err
 			}
@@ -79,7 +78,7 @@ func (b *BVideo) GetVideoFeedList(ctx context.Context, username string, latestTi
 			//如果为游客,则置为未关注
 			videoList[i].Author.IsFollow = false
 		} else {
-			relFollow, err := b.ds.UserFollowRelation().FirstOrCreate(ctx, u.UserId, author.UserId, u.Name, author.Name)
+			relFollow, err := b.ds.UserFollowRelation().FirstOrCreate(ctx, u.UserID, author.UserID, u.Name, author.Name)
 			if err != nil {
 				return &api.VideoFeedListRsp{}, err
 			}
@@ -94,20 +93,20 @@ func (b *BVideo) GetVideoFeedList(ctx context.Context, username string, latestTi
 	return &api.VideoFeedListRsp{VideoList: videoList, NextTime: NextTime}, nil
 }
 
-func (b *BVideo) PublishAction(ctx *gin.Context, file *multipart.FileHeader, title, username string) error {
+func (b *BVideo) PublishAction(ctx *gin.Context, file *multipart.FileHeader, title string, userID uint) error {
 	//构建文件名和路径
 	//获取、文件名
 	fileName := file.Filename
 	base := filepath.Base(fileName)
 	//用户名-上传时间戳-文件名,创建路径
-	fileNameLatest := fmt.Sprintf("%s-%d-%s", username, time.Now().Unix(), base)
+	fileNameLatest := fmt.Sprintf("%d-%d-%s", userID, time.Now().Unix(), base)
 	err := sentVideo(file, fileNameLatest)
 	if err != nil {
 		return err
 	}
 	//更新用户视频数和创建视频记录
 	//获取作者信息
-	u, err := b.ds.Users().GetByName(ctx, username)
+	u, err := b.ds.Users().Get(ctx, &model.User{UserID: userID})
 	if err != nil {
 		return err
 	}
@@ -115,7 +114,7 @@ func (b *BVideo) PublishAction(ctx *gin.Context, file *multipart.FileHeader, tit
 	v := model.Video{
 		PlayURL:  FileSavePath + fileNameLatest,
 		Title:    title,
-		AuthorId: u.UserId,
+		AuthorId: u.UserID,
 		CoverURL: "https://cdn.pixabay.com/photo/2016/03/27/18/10/bear-1283347_1280.jpg",
 	}
 	err = b.ds.Videos().Create(ctx, &v)
@@ -133,15 +132,16 @@ func (b *BVideo) PublishAction(ctx *gin.Context, file *multipart.FileHeader, tit
 
 }
 
-func (b *BVideo) PublishList(ctx context.Context, userID int) (*api.VideoPublishListRsp, error) {
+func (b *BVideo) PublishList(ctx context.Context, userID uint) (*api.VideoPublishListRsp, error) {
 	var rsp api.VideoPublishListRsp
 	//得到userID的User结构体
-	u, err := b.ds.Users().GetByID(ctx, uint(userID))
+	u, err := b.ds.Users().Get(ctx, &model.User{UserID: userID})
 	if err != nil {
 		return &rsp, err
 	}
 	//根据userID查找所有的视频
-	list, err := b.ds.Videos().ListAllVideoByAuthorIDLen(ctx, u.UserId, int(u.WorkCount))
+	fmt.Println(u)
+	list, err := b.ds.Videos().ListAllVideoByAuthorIDLen(ctx, userID, u.WorkCount)
 	if err != nil {
 		return &rsp, err
 	}
@@ -150,7 +150,7 @@ func (b *BVideo) PublishList(ctx context.Context, userID int) (*api.VideoPublish
 	for i, v := range list {
 		rspList[i] = *tools.VideoToRsp(&v, u)
 		//得到点赞关系
-		rel, err := b.ds.VideoFavoriteRelation().FirstOrCreate(ctx, v.VideoId, u.UserId, u.Name)
+		rel, err := b.ds.VideoFavoriteRelation().FirstOrCreate(ctx, v.VideoID, u.UserID, u.Name)
 		if err != nil {
 			return &rsp, err
 		}

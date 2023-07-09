@@ -5,18 +5,19 @@ services:
     image: mysql:latest
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: mypassword
+      MYSQL_ROOT_PASSWORD: rootpassword
       MYSQL_ROOT_HOST: '%'
-      MYSQL_ALLOW_EMPTY_PASSWORD: 'no'
-      MYSQL_DATABASE: tiktokk
-      MYSQL_REQUIRE_SECURE_TRANSPORT: '1'
-      MYSQL_SERVER_ID: 1
 
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'no'
+      MYSQL_REQUIRE_SECURE_TRANSPORT: '1'
+
+      MYSQL_SERVER_ID: 1
+      MYSQL_DATABASE: tiktokk
     ports:
       - "3307:3306"
     volumes:
-      - ./data/master:/var/lib/mysql
-    command: --server-id=1 --log-bin --binlog-do-db=TikTokk
+      - ./data/master:/var/lib/mysql  #当前目录下创建data目录,将mysql数据存在其下的master目录
+    command: --server-id=1 --log-bin --binlog-do-db=TikTokk #log-bin启用二进制日志记录 binlog-do-db=x二进制日志只记录数据库x
 
   slave1:
     image: mysql:latest
@@ -24,10 +25,12 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: mypassword
       MYSQL_ROOT_HOST: '%'
+
       MYSQL_ALLOW_EMPTY_PASSWORD: 'no'
-      MYSQL_DATABASE: tiktokk
       MYSQL_REQUIRE_SECURE_TRANSPORT: '1'
+
       MYSQL_SERVER_ID: 2
+      MYSQL_DATABASE: tiktokk
 
     ports:
       - "3308:3306"
@@ -41,8 +44,10 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: mypassword
       MYSQL_ROOT_HOST: '%'
+
       MYSQL_ALLOW_EMPTY_PASSWORD: 'no'
       MYSQL_DATABASE: tiktokk
+
       MYSQL_REQUIRE_SECURE_TRANSPORT: '1'
       MYSQL_SERVER_ID: 3
 
@@ -51,3 +56,5 @@ services:
     volumes:
       - ./data/slave2:/var/lib/mysql
     command: --server-id=3 --log-bin --binlog-do-db=tiktokk --relay-log --relay-log-index=slave-relay-bin.index --relay-log-info-repository=TABLE
+
+

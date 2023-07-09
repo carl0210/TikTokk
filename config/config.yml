@@ -5,7 +5,7 @@ mysql:
 
 mysql-master:
   user: "root"
-  password: "mypassword"
+  password: "156156qq"
   database: "tiktokk"
   ip: "192.168.31.30"
   port: 3307
@@ -29,14 +29,14 @@ mysql-slave-2:
 
 jwt:
   key: "666"
-  identityKey: "username"
+  identityKey: "userID"
 
 feed:
   len: 3
 
 fileSave:
-  file: "http://192.168.31.30:10001/publicSrc/"
-  uploads : "http://192.168.31.30:10001/uploads/"
+  file: "http://192.168.31.30:10080/publicSrc/"
+  uploads : "http://192.168.31.30:10080/uploads/"
 
 log:
   level: log
