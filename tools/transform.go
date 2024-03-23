@@ -12,7 +12,7 @@ import (
 func VideoToRsp(v *model.Video, a *model.User) *api.VideoDetailRespond {
 	var rsp api.VideoDetailRespond
 	rsp.FavoriteCount = int64(v.FavoriteCount)
-	rsp.PlayURL = v.PlayURL
+	rsp.PlayURL = v.PlayKey
 	rsp.CommentCount = int64(v.CommentCount)
 	rsp.ID = int64(v.VideoID)
 	rsp.CoverURL = v.CoverURL

@@ -33,7 +33,7 @@ type Video struct {
 	CommentCount  int64        `json:"comment_count"`  // 视频的评论总数
 	CoverURL      string       `json:"cover_url"`      // 视频封面地址
 	FavoriteCount int64        `json:"favorite_count"` // 视频的点赞总数
-	PlayURL       string       `json:"play_url"`       // 视频播放地址
+	PlayKey       string       `json:"play_key"`       // 视频播放地址
 	Title         string       `json:"title"`          // 视频标题
 }
 

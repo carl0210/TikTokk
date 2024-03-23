@@ -4,18 +4,20 @@ import (
 	"TikTokk/internal/TikTokk/biz/video"
 	"TikTokk/internal/TikTokk/store"
 	"TikTokk/internal/pkg/Tlog"
+	"TikTokk/internal/pkg/minio"
 	"TikTokk/internal/pkg/token"
 	"context"
 	"fmt"
+	"log"
+	"os"
+	"sync"
+	"time"
+
 	"github.com/go-redis/redis/v8"
 	"github.com/spf13/viper"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
-	"log"
-	"os"
-	"sync"
-	"time"
 )
 
 var once sync.Once
@@ -24,8 +26,9 @@ func TikTokInit() {
 	Config()
 	Logg()
 	Mysql()
-	Redis()
+	//Redis()
 	TikTokk()
+	minio.Init()
 	Tlog.Infow("TikTokInit Successful")
 }
 

@@ -6,20 +6,21 @@ import (
 	"TikTokk/internal/pkg/middleware"
 	"context"
 	"errors"
-	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
+
+	"github.com/gin-gonic/gin"
 )
 
 func Run() {
 	//创建路由
 	e := route()
 	//创建并运行server实例
-	httpserver := &http.Server{Addr: "192.168.31.30:8080", Handler: e}
+	httpserver := &http.Server{Addr: "192.168.31.29:8080", Handler: e}
 	go func() {
 		if err := httpserver.ListenAndServe(); err != nil {
 			return
