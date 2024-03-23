@@ -60,7 +60,7 @@ func (r *VideoRedis) ToMysqlStruct() Video {
 		AuthorId:      uint(r.AuthorId),
 		CommentCount:  r.CommentCount,
 		CoverURL:      r.CoverURL,
-		PlayURL:       r.PlayURL,
+		PlayKey:       r.PlayURL,
 		Title:         r.Title,
 		FavoriteCount: r.FavoriteCount,
 	}

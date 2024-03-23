@@ -3,11 +3,10 @@ package store
 import (
 	"TikTokk/internal/TikTokk/model"
 	"context"
-	"encoding/json"
-	"fmt"
+	"time"
+
 	"github.com/go-redis/redis/v8"
 	"gorm.io/gorm"
-	"time"
 )
 
 type VideoStore interface {
@@ -56,31 +55,38 @@ func (s *SVideo) List(ctx context.Context, lastTime time.Time) ([]model.Video, e
 }
 
 func (s *SVideo) Feed(ctx context.Context, l int, lastTime time.Time) ([]model.Video, error) {
-	//如果不存在主键,则直接通过数据库查询,并将结果同步到redis
-	redisKey := fmt.Sprintf("videos-feed")
-	//存在主键则通过redis查询
-	jStr, err := s.rc.Get(ctx, redisKey).Result()
+	// //如果不存在主键,则直接通过数据库查询,并将结果同步到redis
+	// redisKey := fmt.Sprintf("videos-feed")
+	// //存在主键则通过redis查询
+	// jStr, err := s.rc.Get(ctx, redisKey).Result()
+	// if err != nil {
+	// 	if err == redis.Nil {
+	// 		return s.FeedPartOfMysqlAndSyncToRedis(ctx, l, lastTime, redisKey)
+	// 	}
+	// 	return nil, err
+	// }
+	// //如果redis查询不到则通过数据库查询
+	// if jStr == "" {
+	// 	return s.FeedPartOfMysqlAndSyncToRedis(ctx, l, lastTime, redisKey)
+	// }
+	// //如果有记录,则解码得到的json
+	// ru := make([]model.VideoRedis, l)
+	// if err := json.Unmarshal([]byte(jStr), &ru); err != nil {
+	// 	return nil, err
+	// }
+	// //转化并返回
+	// rup := make([]model.Video, len(ru))
+	// for i, v := range ru {
+	// 	rup[i] = v.ToMysqlStruct()
+	// }
+	// return rup, nil
+	//查询数据库
+	list := make([]model.Video, 0, l)
+	err := s.db.WithContext(ctx).Table("videos").Order("updated_at desc").Where("updated_at < ?", lastTime).Limit(l).Find(&list).Error
 	if err != nil {
-		if err == redis.Nil {
-			return s.FeedPartOfMysqlAndSyncToRedis(ctx, l, lastTime, redisKey)
-		}
-		return nil, err
+		return list, err
 	}
-	//如果redis查询不到则通过数据库查询
-	if jStr == "" {
-		return s.FeedPartOfMysqlAndSyncToRedis(ctx, l, lastTime, redisKey)
-	}
-	//如果有记录,则解码得到的json
-	ru := make([]model.VideoRedis, l)
-	if err := json.Unmarshal([]byte(jStr), &ru); err != nil {
-		return nil, err
-	}
-	//转化并返回
-	rup := make([]model.Video, len(ru))
-	for i, v := range ru {
-		rup[i] = v.ToMysqlStruct()
-	}
-	return rup, nil
+	return list, nil
 
 }
 
@@ -97,27 +103,35 @@ func (s *SVideo) FeedPartOfMysqlAndSyncToRedis(ctx context.Context, l int, lastT
 }
 
 func (s *SVideo) ListAllVideoByAuthorIDLen(ctx context.Context, authorID uint, l int64) ([]model.Video, error) {
-	//先从redis查询
-	redisKey := fmt.Sprintf("videos-publishList-%d", authorID)
-	j, err := s.rc.Get(ctx, redisKey).Result()
+	// //先从redis查询
+	// redisKey := fmt.Sprintf("videos-publishList-%d", authorID)
+	// j, err := s.rc.Get(ctx, redisKey).Result()
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// //如果查询不到则访问数据库,并同步到redis
+	// if j == "" {
+	// 	return s.GetPartOfMysqlAndSyncToRedis(ctx, authorID, l, redisKey)
+	// }
+	// //如果查询到则返回结果
+	// listR := make([]model.VideoRedis, l)
+	// if err := json.Unmarshal([]byte(j), &listR); err != nil {
+	// 	return nil, err
+	// }
+	// //转化并返回
+	// listD := make([]model.Video, len(listR))
+	// for i, v := range listR {
+	// 	listD[i] = v.ToMysqlStruct()
+	// }
+	// return listD, nil
+
+	//查询数据库
+	list := make([]model.Video, l)
+	err := s.db.Where("author_id=?", authorID).Find(&list).Error
 	if err != nil {
 		return nil, err
 	}
-	//如果查询不到则访问数据库,并同步到redis
-	if j == "" {
-		return s.GetPartOfMysqlAndSyncToRedis(ctx, authorID, l, redisKey)
-	}
-	//如果查询到则返回结果
-	listR := make([]model.VideoRedis, l)
-	if err := json.Unmarshal([]byte(j), &listR); err != nil {
-		return nil, err
-	}
-	//转化并返回
-	listD := make([]model.Video, len(listR))
-	for i, v := range listR {
-		listD[i] = v.ToMysqlStruct()
-	}
-	return listD, nil
+	return list, nil
 }
 
 func (s *SVideo) GetPartOfMysqlAndSyncToRedis(ctx context.Context, authorID uint, l int64, redisKey string) ([]model.Video, error) {

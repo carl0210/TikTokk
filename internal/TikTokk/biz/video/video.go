@@ -4,13 +4,16 @@ import (
 	"TikTokk/api"
 	"TikTokk/internal/TikTokk/model"
 	"TikTokk/internal/TikTokk/store"
+	"TikTokk/internal/pkg/minio"
 	"TikTokk/tools"
 	"context"
 	"fmt"
-	"github.com/gin-gonic/gin"
+	"io"
 	"mime/multipart"
 	"path/filepath"
 	"time"
+
+	"github.com/gin-gonic/gin"
 )
 
 type VideoBiz interface {
@@ -60,6 +63,11 @@ func (b *BVideo) GetVideoFeedList(ctx context.Context, userID uint, latestTime i
 		}
 		//构建返回视频列表
 		videoList[i] = *tools.VideoToRsp(&v, author)
+		playUrl, err := minio.GetObject(ctx, "dev", v.PlayKey, 1*time.Hour)
+		if err != nil {
+			return &api.VideoFeedListRsp{}, err
+		}
+		videoList[i].PlayURL = playUrl
 		//得到视频的喜欢状态
 		//如果为游客，则默认未喜欢
 		if len(u.Name) == 0 {
@@ -100,7 +108,16 @@ func (b *BVideo) PublishAction(ctx *gin.Context, file *multipart.FileHeader, tit
 	base := filepath.Base(fileName)
 	//用户名-上传时间戳-文件名,创建路径
 	fileNameLatest := fmt.Sprintf("%d-%d-%s", userID, time.Now().Unix(), base)
-	err := sentVideo(file, fileNameLatest)
+	f, err := file.Open()
+	if err != nil {
+		return err
+	}
+	reader, ok := f.(io.Reader)
+	if !ok {
+		e := fmt.Errorf("f can't transform to io.reader")
+		return e
+	}
+	err = minio.PutObject(ctx, "dev", fileNameLatest, reader, file.Size)
 	if err != nil {
 		return err
 	}
@@ -112,7 +129,7 @@ func (b *BVideo) PublishAction(ctx *gin.Context, file *multipart.FileHeader, tit
 	}
 	//创建视频记录
 	v := model.Video{
-		PlayURL:  FileSavePath + fileNameLatest,
+		PlayKey:  fileNameLatest,
 		Title:    title,
 		AuthorId: u.UserID,
 		CoverURL: "https://cdn.pixabay.com/photo/2016/03/27/18/10/bear-1283347_1280.jpg",
@@ -140,7 +157,6 @@ func (b *BVideo) PublishList(ctx context.Context, userID uint) (*api.VideoPublis
 		return &rsp, err
 	}
 	//根据userID查找所有的视频
-	fmt.Println(u)
 	list, err := b.ds.Videos().ListAllVideoByAuthorIDLen(ctx, userID, u.WorkCount)
 	if err != nil {
 		return &rsp, err

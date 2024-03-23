@@ -6,8 +6,9 @@ import (
 	"TikTokk/internal/TikTokk/store"
 	"TikTokk/tools"
 	"context"
-	"gorm.io/gorm"
 	"strconv"
+
+	"gorm.io/gorm"
 )
 
 type FavoriteRelationBiz interface {
@@ -60,13 +61,10 @@ func (b *BFavoriteRelation) List(ctx context.Context, userID uint) (*api.Favorit
 func (b *BFavoriteRelation) Action(ctx context.Context, videoID, userID, ActionType uint) error {
 	//判断点赞关系中点赞状态和操作类型代表的点赞状态是否相同，不相同则修改，相同则不修改
 	//获取点赞类型
-	var isFavorite bool
 	var op int
 	if ActionType == 1 {
-		isFavorite = true
 		op = 1
 	} else {
-		isFavorite = false
 		op = -1
 	}
 	//用户与视频的点赞关系
@@ -79,7 +77,7 @@ func (b *BFavoriteRelation) Action(ctx context.Context, videoID, userID, ActionT
 		return err
 	}
 	//如果跟原来的点赞状态不同,则进行修改
-	if !rel.ISFavorite && isFavorite || rel.ISFavorite && !isFavorite {
+	if !rel.ISFavorite && op == 1 || rel.ISFavorite && op == -1 {
 		//获取作者、视频信息
 		video, err := b.ds.Videos().Get(ctx, &model.Video{VideoID: videoID})
 		if err != nil {
@@ -99,7 +97,7 @@ func (b *BFavoriteRelation) Action(ctx context.Context, videoID, userID, ActionT
 			//修改点赞关系
 			if err := tx.Model(&model.UserFavorite{}).
 				Where("user_id=? AND user_name=? AND video_id =?", user.UserID, user.Name, video.VideoID).
-				Update("is_favorite", isFavorite).Error; err != nil {
+				Update("is_favorite", !rel.ISFavorite).Error; err != nil {
 				return err
 			}
 			//用户喜欢数+1/-1
@@ -107,7 +105,7 @@ func (b *BFavoriteRelation) Action(ctx context.Context, videoID, userID, ActionT
 				return err
 			}
 			//作者获赞数+1/-1
-			if err := tx.Model(&author).Update("total_favorited", authorTotalF+op).Error; err != nil {
+			if err := tx.Model(&author).Update("total_favorite", authorTotalF+op).Error; err != nil {
 				return err
 			}
 			//视频点赞数+1/-1
