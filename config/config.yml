@@ -1,0 +1,53 @@
+mysql:
+  config: "charset=utf8mb4&parseTime=true&loc=Local"
+  log-level: 4 # GORM Tlog level, 1: silent, 2:error, 3:warn, 4:info
+
+
+mysql-master:
+  user: "root"
+  password: "156156qq"
+  database: "tiktokk"
+  ip: "127.0.0.1"
+  port: 3306
+  config: "charset=utf8mb4&parseTime=true&loc=Local"
+
+mysql-slave-1:
+  user: "root"
+  password: "mypassword"
+  database: "tiktokk"
+  ip: "192.168.31.30"
+  port: 3308
+  config: "charset=utf8mb4&parseTime=true&loc=Local"
+
+mysql-slave-2:
+  user: "root"
+  password: "mypassword"
+  database: "tiktokk"
+  ip: "192.168.31.30"
+  port: 3309
+  config: "charset=utf8mb4&parseTime=true&loc=Local"
+
+jwt:
+  key: "666"
+  identityKey: "userID"
+
+feed:
+  len: 3
+
+fileSave:
+  file: "http://192.168.31.30:10080/publicSrc/"
+  uploads : "http://192.168.31.30:10080/uploads/"
+
+log:
+  level: log
+  disableCaller: true
+  disableStackTrace: false
+  format: console
+  outputPaths: [./tiktokk.log,stdout]
+  errorOutputPaths: [stderr]
+
+minio:
+  endpoint: "192.168.31.29:9000"
+  accessKeyID: "WLrbCVq3zQZkche3UE1x"
+  secretAccessKey: "aivpwXrUPQ9JjXC0sNia6kxFeN5LexqmHRf6bbSU"
+  useSSL: false

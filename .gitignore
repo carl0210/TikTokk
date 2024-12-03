@@ -1,0 +1,4 @@
+tiktokl.log
+.golangci.yaml
+/build/docker-compose/data
+.idea
